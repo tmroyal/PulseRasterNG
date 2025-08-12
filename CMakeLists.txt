@@ -11,12 +11,19 @@ find_package(raylib 4.5 REQUIRED) # from brew
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIBLO REQUIRED liblo)
 
+add_subdirectory(sol2)        # provides target: sol2::sol2
+
 add_executable(
     deckproto
     main.cpp
     audio_engine/SC_Server.cpp
 )
+# Lua from system
+find_package(Lua 5.4 REQUIRED)    # or 5.3 if that's what you have
+
 target_include_directories(deckproto PRIVATE audio_engine)
+target_link_libraries(deckproto PRIVATE sol2::sol2 ${LUA_LIBRARIES})
+target_include_directories(deckproto PRIVATE ${LUA_INCLUDE_DIR})
 
 if (TARGET PkgConfig::LIBLO)
   target_link_libraries(deckproto PRIVATE raylib PkgConfig::LIBLO)

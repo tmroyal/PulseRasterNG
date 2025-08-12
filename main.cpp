@@ -4,8 +4,10 @@
 #include <cmath>
 #include <lo/lo.h>
 #include "raylib.h"
+#include <iostream>
 
 #include "audio_engine/SC_Server.hpp"
+#include <sol/sol.hpp>
 
 template <typename T>
 T clamp(T v, T lo, T hi) {
@@ -36,6 +38,9 @@ void clockThread(SC_Server& sc, node_id node) {
 }
 
 int main(){
+    sol::state lua; lua.open_libraries(sol::lib::base);
+    lua.set_function("add", [](int a,int b){return a+b;});
+    std::cout << lua.script("return add(2,3)").get<int>() << "\n";
 
     SC_Server server("127.0.0.1", "57110");
 

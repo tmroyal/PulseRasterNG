@@ -5,10 +5,11 @@
 
 SC_Server::SC_Server(const char* host, const char* port){
     // Determine directory for SCSYNTH
-    std::string dir = std::getenv("SCSYNTH_DIR");
-    if (dir.empty()){
+    const char* env_dir = std::getenv("SCSYNTH_DIR");
+    if (!env_dir){
         throw std::runtime_error(std::string("Environment variable not set: SCSYNTH_DIR"));
     }
+    std::string dir = env_dir;
     // Ensure leading slash
     if (dir[0] != '/'){
         dir = "/" + dir;
