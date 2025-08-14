@@ -1,6 +1,10 @@
 #include "ScriptRunner.h"
 
-ScriptRunner::ScriptRunner(){}
+#include "../visual_engine/GraphicsApi.hpp"
+
+ScriptRunner::ScriptRunner(){
+    lua.open_libraries(sol::lib::base, sol::lib::math);
+}
 
 void ScriptRunner::load_script(const char* path){
     sol::environment env(lua, sol::create, lua.globals());
@@ -21,6 +25,8 @@ void ScriptRunner::load_script(const char* path){
         std::cerr << "All scripts require the following functions: draw" << "\n";
     }
     scripts_loaded = true;
+
+    GraphicsApi::applyGraphicsApi(lua);
 }
 
 void ScriptRunner::draw(){
