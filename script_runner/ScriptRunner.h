@@ -7,8 +7,9 @@ public:
     ScriptRunner();
     void load_script(const char* path);
     void draw();
-private:
+    void inc();
     sol::state lua;
+private:
     std::vector<sol::environment> environments;
     size_t currentDrawScript;
     bool scripts_loaded = false;

@@ -1,9 +1,14 @@
 #include "ScriptRunner.h"
 
-#include "../visual_engine/GraphicsApi.hpp"
 
 ScriptRunner::ScriptRunner(){
     lua.open_libraries(sol::lib::base, sol::lib::math);
+}
+
+void ScriptRunner::inc(){
+    if (scripts_loaded){
+        currentDrawScript = (currentDrawScript + 1) % environments.size();
+    }
 }
 
 void ScriptRunner::load_script(const char* path){
@@ -25,13 +30,12 @@ void ScriptRunner::load_script(const char* path){
         std::cerr << "All scripts require the following functions: draw" << "\n";
     }
     scripts_loaded = true;
-
-    GraphicsApi::applyGraphicsApi(lua);
 }
 
 void ScriptRunner::draw(){
     if (scripts_loaded){
-        size_t index = std::max((size_t) 0, std::min(currentDrawScript, environments.size()));
-        environments[index]["draw"]();
+        size_t index = std::max((size_t) 0, std::min(currentDrawScript, environments.size()-1));
+        sol::environment& env = environments[index];
+        env["draw"]();
     }
 }
