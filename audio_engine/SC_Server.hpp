@@ -23,6 +23,7 @@ public:
     node_id synth(const std::string& name);
     void set(node_id node, const char* name, int value);
     void set(node_id node, const char* name, double value);
+    bool wait_sync(int tag, int timeout_ms = 2000);
 
 private:
     std::atomic<node_id> current_node{1000};

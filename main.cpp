@@ -1,4 +1,5 @@
 #include <lo/lo.h>
+#include "AudioApi.hpp"
 #include "raylib.h"
 
 #include "audio_engine/SC_Server.hpp"
@@ -57,6 +58,8 @@ int main(){
     VisualEngine ve(runner);
 
     SC_Server server("127.0.0.1", "57110");
+    AudioApi audio_api(server);
+    audio_api.applyAudioApi(runner.lua);
 
     runner.load_script("scripts/wiggle_ball.lua");
     runner.load_script("scripts/twirling_cube.lua");

@@ -17,6 +17,7 @@ add_executable(
     deckproto
     main.cpp
     audio_engine/SC_Server.cpp
+    audio_engine/AudioApi.cpp
     visual_engine/VisualEngine.cpp
     visual_engine/GraphicsApi.cpp
     script_runner/ScriptRunner.cpp
