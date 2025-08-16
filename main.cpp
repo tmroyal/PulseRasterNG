@@ -1,7 +1,7 @@
 #include <lo/lo.h>
 #include "raylib.h"
 
-// #include "audio_engine/SC_Server.hpp"
+#include "audio_engine/SC_Server.hpp"
 #include <sol/sol.hpp>
 #include "script_runner/ScriptRunner.h"
 #include "visual_engine/VisualEngine.hpp"
@@ -50,14 +50,17 @@ int main(){
     // std::thread th(clockThread, std::ref(server), node);
 
     ScriptRunner runner;
-    runner.load_script("scripts/wiggle_ball.lua");
-    runner.load_script("scripts/twirling_cube.lua");
-    runner.inc();
 
     TimingApi timing_api;
     timing_api.applyTimingApi(runner.lua);
 
     VisualEngine ve(runner);
+
+    SC_Server server("127.0.0.1", "57110");
+
+    runner.load_script("scripts/wiggle_ball.lua");
+    runner.load_script("scripts/twirling_cube.lua");
+    runner.inc();
 
     while (!WindowShouldClose()) {
         ve.draw();

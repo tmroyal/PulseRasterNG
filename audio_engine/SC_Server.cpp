@@ -3,6 +3,9 @@
 #include <cstdlib>
 #include <stdexcept>
 
+
+
+
 SC_Server::SC_Server(const char* host, const char* port){
     // Determine directory for SCSYNTH
     const char* env_dir = std::getenv("SCSYNTH_DIR");
@@ -13,7 +16,7 @@ SC_Server::SC_Server(const char* host, const char* port){
     // Ensure leading slash
     if (dir[0] != '/'){
         dir = "/" + dir;
-    }    
+    }
 
     // Initialize address and load synthdefs
     sc = lo_address_new(host, port);

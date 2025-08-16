@@ -5,12 +5,22 @@ void GraphicsApi::applyGraphicsApi(sol::state& lua){
     lua["width"] = GetScreenWidth();
     lua["height"] = GetScreenHeight();
 
-    lua.set_function("fill", [&](unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255) {
-        fillColor = {r, g, b, a};
+    lua.set_function("fill", [&](double r, double g, double b, double a = 1.0) {
+        fillColor = {
+            GraphicsApi::toUChar(r),
+            GraphicsApi::toUChar(g),
+            GraphicsApi::toUChar(b),
+            GraphicsApi::toUChar(a)
+        };
     });
-    
-    lua.set_function("background", [&](unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255) {
-        backgroundColor = {r, g, b, a};
+
+    lua.set_function("background", [&](double r, double g, double b, double a = 1.0) {
+        backgroundColor = {
+            GraphicsApi::toUChar(r),
+            GraphicsApi::toUChar(g),
+            GraphicsApi::toUChar(b),
+            GraphicsApi::toUChar(a)
+        };
     });
 
     lua.set_function("rect", [&](float x, float y, float width, float height) {
