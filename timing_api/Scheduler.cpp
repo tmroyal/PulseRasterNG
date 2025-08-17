@@ -24,46 +24,33 @@ void Scheduler::repeat(double interval_seconds, sol::function callback) {
         current_time = std::chrono::time_point_cast<Clock::duration>(
             current_time + period
         );
-        {
-            std::lock_guard<std::mutex> lg(task_mutex);
-            tasks.push(Task{current_time, *thunk});
-        }
-        task_cv.notify_one();
+        push_task(current_time, *thunk);
     };
 
-    {
-        std::lock_guard<std::mutex> lg(task_mutex);
-        tasks.push(Task{
-            current_time,
-            *thunk
-        });
-    }
-    task_cv.notify_one();
+    push_task(current_time, *thunk);
 }
 
 void Scheduler::vary_repeat(double initial_delay_seconds, sol::function callback) {
     Time current_time = Clock::now();
     auto initial_delay = Sec(initial_delay_seconds);
+    auto next_time = std::chrono::time_point_cast<Clock::duration>(
+        current_time + initial_delay
+    );
 
     auto thunk = std::make_shared<std::function<void()>>();    
-    *thunk = [this, cb = std::move(callback), thunk, current_time]() mutable {
-        double next_interval = cb();
-        Time next_time = std::chrono::time_point_cast<Clock::duration>(
-            Clock::now() + Sec(next_interval)
+    *thunk = [this, cb = std::move(callback), thunk, next_time]() mutable {
+        double cb_return = cb();
+        next_time = std::chrono::time_point_cast<Clock::duration>(
+            next_time + Sec(cb_return)
         );
-        {
-            std::lock_guard<std::mutex> lg(task_mutex);
-            tasks.push(Task{next_time, *thunk});
-        }
-        task_cv.notify_one();
+        push_task(next_time, *thunk);
     };
 
-    {
-        std::lock_guard<std::mutex> lg(task_mutex);
-        tasks.push(Task{
-            std::chrono::time_point_cast<Clock::duration>(current_time + initial_delay),
-            *thunk
-        });
-    }
+    push_task(next_time, *thunk);
+}
+
+void Scheduler::push_task(Time t, std::function<void()> f) {
+    std::lock_guard<std::mutex> lg(task_mutex);
+    tasks.push(Task{t, std::move(f)});
     task_cv.notify_one();
 }

@@ -24,6 +24,7 @@ public:
     void repeat(double interval_seconds, sol::function callback);
     void vary_repeat(double initial_delay_seconds, sol::function callback);
 private:
+    void push_task(Time t, std::function<void()> f);
     std::priority_queue<Task> tasks;
     std::mutex task_mutex;
     std::condition_variable task_cv; 
