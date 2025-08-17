@@ -1,5 +1,29 @@
 #include "Scheduler.hpp"
 
+
+void Scheduler::start() {
+    if (running.exchange(true)) {
+        return; // Already running
+    }
+    worker_thread = std::thread(&Scheduler::worker_loop, this);
+}
+
+void Scheduler::stop() {
+    if (!running.exchange(false)) {
+        return; // Already stopped
+    }
+    {
+        std::lock_guard<std::mutex> lg(task_mutex);
+        while (!tasks.empty()) {
+            tasks.pop();
+        }
+    }
+    task_cv.notify_all(); // Wake up the worker thread if it's waiting
+    if (worker_thread.joinable()) {
+        worker_thread.join();
+    }
+}
+
 void Scheduler::timer(double seconds, sol::function callback) {
     Time target_time = std::chrono::time_point_cast<Clock::duration>(
            Clock::now() + Sec(seconds)
@@ -53,4 +77,44 @@ void Scheduler::push_task(Time t, std::function<void()> f) {
     std::lock_guard<std::mutex> lg(task_mutex);
     tasks.push(Task{t, std::move(f)});
     task_cv.notify_one();
+}
+
+
+void Scheduler::worker_loop() {
+    std::unique_lock<std::mutex> ul(task_mutex);
+    while (running) {
+        task_cv.wait(ul, [this] { return !running || !tasks.empty(); });
+        if (!running) break;
+    
+        Task job = tasks.top();
+        auto deadline = job.time;
+        auto pre = deadline - std::chrono::microseconds(500);        
+
+        if (Clock::now() < deadline) {
+            // Wait until the task's scheduled time or until a new task is added/stop signal
+            task_cv.wait_until(ul, pre, [this, deadline] {
+                return !running || tasks.empty() || tasks.top().time < deadline;
+            });
+            // if stopped while waiting, abort
+            if (!running) break;
+            // if tasks have been cleared of if the top task changed, re-evaluate
+            if (tasks.empty() || tasks.top().time > deadline) {
+                continue;
+            }
+        }
+
+        tasks.pop();
+        auto fn = std::move(job.callback);
+        ul.unlock();
+        while (Clock::now() < deadline){}
+        try {
+            fn();
+        } catch (const std::exception& e) {
+            // Log the error, but keep the scheduler running
+            std::cerr << "Error in scheduled task: " << e.what() << std::endl;
+        } catch (...) {
+            std::cerr << "Unknown error in scheduled task." << std::endl;
+        }
+        ul.lock();
+    }
 }
