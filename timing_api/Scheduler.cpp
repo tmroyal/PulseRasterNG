@@ -79,10 +79,10 @@ void Scheduler::push_task(Time t, std::function<void()> f) {
     task_cv.notify_one();
 }
 
-
 void Scheduler::worker_loop() {
     std::unique_lock<std::mutex> ul(task_mutex);
     while (running) {
+        // don't wait if there are tasks available
         task_cv.wait(ul, [this] { return !running || !tasks.empty(); });
         if (!running) break;
     
@@ -90,15 +90,15 @@ void Scheduler::worker_loop() {
         auto deadline = job.time;
         auto pre = deadline - std::chrono::microseconds(500);        
 
-        if (Clock::now() < deadline) {
+        if (Clock::now() < pre) {
             // Wait until the task's scheduled time or until a new task is added/stop signal
             task_cv.wait_until(ul, pre, [this, deadline] {
-                return !running || tasks.empty() || tasks.top().time < deadline;
+                return !running || (!tasks.empty() && deadline > tasks.top().time);
             });
             // if stopped while waiting, abort
             if (!running) break;
             // if tasks have been cleared of if the top task changed, re-evaluate
-            if (tasks.empty() || tasks.top().time > deadline) {
+            if (tasks.empty() || deadline > tasks.top().time) {
                 continue;
             }
         }
