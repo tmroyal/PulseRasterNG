@@ -38,20 +38,21 @@ void Scheduler::timer(double seconds, sol::function callback) {
 }
 
 void Scheduler::repeat(double interval_seconds, sol::function callback) {
-    Time current_time = Clock::now();
-    auto period = Sec(interval_seconds);
+    const auto period = Sec(interval_seconds);
+    Time next_time = std::chrono::time_point_cast<Clock::duration>(
+        Clock::now() + period
+    ); // start in the future
 
-    auto thunk = std::make_shared<std::function<void()>>();    
-    *thunk = [this, cb = std::move(callback), thunk, current_time, period]() mutable {
+    auto thunk = std::make_shared<std::function<void()>>();
+    *thunk = [this, cb = std::move(callback), thunk, period, next_time]() mutable {
         cb();
-        // Reschedule the task
-        current_time = std::chrono::time_point_cast<Clock::duration>(
-            current_time + period
+        next_time = std::chrono::time_point_cast<Clock::duration>(
+            next_time + period
         );
-        push_task(current_time, *thunk);
+        push_task(next_time, [thunk]{ (*thunk)(); } );
     };
 
-    push_task(current_time, *thunk);
+    push_task(next_time, [thunk]{ (*thunk)(); } );
 }
 
 void Scheduler::vary_repeat(double initial_delay_seconds, sol::function callback) {
@@ -67,10 +68,10 @@ void Scheduler::vary_repeat(double initial_delay_seconds, sol::function callback
         next_time = std::chrono::time_point_cast<Clock::duration>(
             next_time + Sec(cb_return)
         );
-        push_task(next_time, *thunk);
+        push_task(next_time, [thunk]{ (*thunk)(); } );
     };
 
-    push_task(next_time, *thunk);
+    push_task(next_time, [thunk]{ (*thunk)(); } );
 }
 
 void Scheduler::push_task(Time t, std::function<void()> f) {
@@ -93,12 +94,12 @@ void Scheduler::worker_loop() {
         if (Clock::now() < pre) {
             // Wait until the task's scheduled time or until a new task is added/stop signal
             task_cv.wait_until(ul, pre, [this, deadline] {
-                return !running || (!tasks.empty() && deadline > tasks.top().time);
+                return !running || (!tasks.empty() && tasks.top().time < deadline);
             });
             // if stopped while waiting, abort
             if (!running) break;
             // if tasks have been cleared of if the top task changed, re-evaluate
-            if (tasks.empty() || deadline > tasks.top().time) {
+            if (tasks.empty() || tasks.top().time < deadline) {
                 continue;
             }
         }

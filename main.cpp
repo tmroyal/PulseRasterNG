@@ -5,6 +5,7 @@
 #include "audio_engine/SC_Server.hpp"
 #include <sol/sol.hpp>
 #include "script_runner/ScriptRunner.h"
+#include "timing_api/Scheduler.hpp"
 #include "visual_engine/VisualEngine.hpp"
 #include "timing_api/TimingApi.hpp"
 
@@ -37,19 +38,6 @@
 // }
 
 int main(){
-    // SC_Server server("127.0.0.1", "57110");
-
-    // start synth (assumes SynthDef "bear" is loaded on scsynth)
-    // node_id node = server.synth("bear");
-
-    // rect state
-    // Vector2 rectC = { GetScreenWidth()*0.5f, GetScreenHeight()*0.5f };
-    // const float moveSpeed = 300.0f;   // px/sec (arrows)
-    // const float stickScale = 400.0f;  // px/sec (analog)
-    // const float dead = 0.15f;
-
-    // std::thread th(clockThread, std::ref(server), node);
-
     ScriptRunner runner;
 
     TimingApi timing_api;
@@ -61,6 +49,10 @@ int main(){
     AudioApi audio_api(server);
     audio_api.applyAudioApi(runner.lua);
 
+    Scheduler scheduler;
+    scheduler.applySchedulerApi(runner.lua);
+    scheduler.start();
+
     runner.load_script("scripts/wiggle_ball.lua");
     runner.load_script("scripts/twirling_cube.lua");
     runner.inc();
@@ -68,6 +60,8 @@ int main(){
     while (!WindowShouldClose()) {
         ve.draw();
     }
+
+    scheduler.stop();
 
     CloseWindow();
 

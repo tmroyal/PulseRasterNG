@@ -21,9 +21,10 @@ add_executable(
     visual_engine/VisualEngine.cpp
     visual_engine/GraphicsApi.cpp
     script_runner/ScriptRunner.cpp
+    timing_api/Scheduler.cpp
 )
 # Lua from system
-find_package(Lua 5.4 REQUIRED)    # or 5.3 if that's what you have
+find_package(Lua 5.4 REQUIRED)
 
 target_include_directories(deckproto PRIVATE audio_engine)
 target_link_libraries(deckproto PRIVATE sol2::sol2 ${LUA_LIBRARIES})

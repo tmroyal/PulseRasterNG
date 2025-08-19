@@ -32,6 +32,20 @@ public:
     void timer(double seconds, sol::function callback);
     void repeat(double interval_seconds, sol::function callback);
     void vary_repeat(double initial_delay_seconds, sol::function callback);
+
+    void applySchedulerApi(sol::state& lua) {
+        lua.set_function("schedule", [&](double seconds, sol::function callback) {
+            timer(seconds, callback);
+        });
+
+        lua.set_function("metro", [&](double interval_seconds, sol::function callback) {
+            repeat(interval_seconds, callback);
+        });
+
+        lua.set_function("schedule_with", [&](double initial_delay_seconds, sol::function callback) {
+            vary_repeat(initial_delay_seconds, callback);
+        });
+    }
 private:
     void push_task(Time t, std::function<void()> f);
     void worker_loop();
