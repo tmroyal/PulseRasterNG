@@ -9,7 +9,8 @@ using Sec = std::chrono::duration<double>;
 
 struct Task {
     Time time;
-    sol::function callback;
+    // sol::function callback;
+    std::function <void()> callback;
 
     bool operator<(const Task& other) const {
         // later time has lower priority
@@ -31,8 +32,10 @@ public:
     void metro(double interval_seconds, sol::function callback);
     void vary_metro(double initial_delay_seconds, sol::function callback);
 
+    void consume();
+
     void applySchedulerApi(sol::state& lua) {
-        lua.set_function("schedule", [&](double seconds, sol::function callback) {
+        lua.set_function("timer", [&](double seconds, sol::function callback) {
             timer(seconds, callback);
         });
 
@@ -45,7 +48,6 @@ public:
         });
     }
 private:
-    void push_task(Time t, sol::function f);
     std::priority_queue<Task> tasks;
     bool running;
 };

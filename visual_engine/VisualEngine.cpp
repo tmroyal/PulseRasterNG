@@ -6,7 +6,8 @@ VisualEngine::VisualEngine(ScriptRunner& runner)
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1280, 800, "PulseRasterNG");
-    SetTargetFPS(60);
+    SetTargetFPS(0);
+    ClearWindowState(FLAG_VSYNC_HINT);
 
     graphics_api.applyGraphicsApi(runner.lua);
 }
