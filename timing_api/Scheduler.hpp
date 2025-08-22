@@ -1,7 +1,6 @@
 #pragma once
 
 #include <queue>
-#include <thread>
 #include <sol/sol.hpp>
 
 using Clock = std::chrono::steady_clock;
@@ -10,8 +9,7 @@ using Sec = std::chrono::duration<double>;
 
 struct Task {
     Time time;
-    // sol::function callback;
-    std::function <void()> callback;
+    sol::function callback;
 
     bool operator<(const Task& other) const {
         // later time has lower priority
@@ -30,8 +28,8 @@ public:
     void stop();
 
     void timer(double seconds, sol::function callback);
-    void repeat(double interval_seconds, sol::function callback);
-    void vary_repeat(double initial_delay_seconds, sol::function callback);
+    void metro(double interval_seconds, sol::function callback);
+    void vary_metro(double initial_delay_seconds, sol::function callback);
 
     void applySchedulerApi(sol::state& lua) {
         lua.set_function("schedule", [&](double seconds, sol::function callback) {
@@ -39,21 +37,15 @@ public:
         });
 
         lua.set_function("metro", [&](double interval_seconds, sol::function callback) {
-            repeat(interval_seconds, callback);
+            metro(interval_seconds, callback);
         });
 
-        lua.set_function("schedule_with", [&](double initial_delay_seconds, sol::function callback) {
-            vary_repeat(initial_delay_seconds, callback);
+        lua.set_function("vary_metro", [&](double initial_delay_seconds, sol::function callback) {
+            vary_metro(initial_delay_seconds, callback);
         });
     }
 private:
-    void push_task(Time t, std::function<void()> f);
-    void worker_loop();
-
+    void push_task(Time t, sol::function f);
     std::priority_queue<Task> tasks;
-    std::mutex task_mutex;
-    std::condition_variable task_cv; 
-
-    std::thread worker_thread;
-    std::atomic<bool> running{false};
+    bool running;
 };
