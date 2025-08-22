@@ -5,8 +5,6 @@
 #include <iostream>
 
 
-
-
 SC_Server::SC_Server(const char* host, const char* port){
     // Determine directory for SCSYNTH
     const char* env_dir = std::getenv("SCSYNTH_DIR");
@@ -74,6 +72,6 @@ node_id SC_Server::synth(const std::string& name){
         std::lock_guard<std::mutex> lock(m);
         active_nodes.insert(id);
     }
-    lo_send(sc, "/s_new", "siii", "bear", id, 1, 0);
+    lo_send(sc, "/s_new", "siii", name.c_str(), id, 1, 0);
     return id;
 }

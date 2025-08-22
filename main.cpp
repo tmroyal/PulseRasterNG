@@ -37,15 +37,12 @@ int main(){
 
     while (!WindowShouldClose()) {
         // sleep until the next frame
-        double current_time = GetTime();
-        if (current_time < next_time) {
-            double sleep_time = next_time - current_time;
-            WaitTime(sleep_time);
+        if (GetTime() >= next_time) {
+            ve.draw();
+            next_time += frame_duration;
         }
-         
-        ve.draw();
+        WaitTime(0.001);
         scheduler.consume();
-        next_time += frame_duration;
     }
 
     scheduler.stop();
