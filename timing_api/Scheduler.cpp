@@ -43,23 +43,22 @@ void Scheduler::metro(double interval_seconds, sol::function callback) {
 }
 
 void Scheduler::vary_metro(double initial_delay_seconds, sol::function callback) {
-    std::cout << "vary_metro is not implemented yet." << std::endl;
-    // Time current_time = Clock::now();
-    // auto initial_delay = Sec(initial_delay_seconds);
-    // auto next_time = std::chrono::time_point_cast<Clock::duration>(
-    //     current_time + initial_delay
-    // );
+    Time current_time = Clock::now();
+    auto initial_delay = Sec(initial_delay_seconds);
+    auto next_time = std::chrono::time_point_cast<Clock::duration>(
+        current_time + initial_delay
+    );
 
-    // auto thunk = std::make_shared<std::function<void()>>();    
-    // *thunk = [this, cb = std::move(callback), thunk, next_time]() mutable {
-    //     double cb_return = cb();
-    //     next_time = std::chrono::time_point_cast<Clock::duration>(
-    //         next_time + Sec(cb_return)
-    //     );
-    //     push_task(next_time, [thunk]{ (*thunk)(); } );
-    // };
+    auto thunk = std::make_shared<std::function<void()>>();    
+    *thunk = [this, cb = std::move(callback), thunk, next_time]() mutable {
+        double cb_return = cb();
+        next_time = std::chrono::time_point_cast<Clock::duration>(
+            next_time + Sec(cb_return)
+        );
+        tasks.push(Task{next_time, [thunk]{ (*thunk)(); }});
+    };
 
-    // push_task(next_time, [thunk]{ (*thunk)(); } );
+    tasks.push(Task{next_time, [thunk]{ (*thunk)(); }});
 }
 
 void Scheduler::consume(){
