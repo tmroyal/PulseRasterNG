@@ -1,7 +1,5 @@
-#include <lo/lo.h>
 #include "AudioApi.hpp"
 #include "raylib.h"
-#include "z_libpd.h"
 
 #include <sol/sol.hpp>
 #include "script_runner/ScriptRunner.h"
@@ -12,16 +10,27 @@
 int main(){
     ScriptRunner runner;
 
-    // TODO: hook PD into this and see if latency issues are improved
-
+    // setup timing and visuals
     TimingApi timing_api;
     timing_api.applyTimingApi(runner.lua);
 
     VisualEngine ve(runner);
 
-    pdEngine pd;
+    // Setup audio engine
+    static pdEngine pd;
     AudioApi audio_api(pd);
     audio_api.applyAudioApi(runner.lua);
+
+    pd.init();
+
+    InitAudioDevice();
+    AudioStream s = LoadAudioStream(SR, 32, N_CHANNELS);
+    SetAudioStreamCallback(s, [](void * buffer, unsigned int frames){
+        pd.process((float*)buffer, (float*)buffer, frames);
+    });
+    PlayAudioStream(s);
+
+    // Setup scheduler
 
     Scheduler scheduler;
     scheduler.applySchedulerApi(runner.lua);
@@ -37,6 +46,7 @@ int main(){
     double init_time = GetTime();
     double next_time = init_time + frame_duration;
 
+
     while (!WindowShouldClose()) {
         // sleep until the next frame
         if (GetTime() >= next_time) {
@@ -48,6 +58,7 @@ int main(){
     }
 
     scheduler.stop();
+    UnloadAudioStream(s);
 
     CloseWindow();
 
