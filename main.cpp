@@ -1,8 +1,8 @@
 #include <lo/lo.h>
 #include "AudioApi.hpp"
 #include "raylib.h"
+#include "z_libpd.h"
 
-#include "audio_engine/SC_Server.hpp"
 #include <sol/sol.hpp>
 #include "script_runner/ScriptRunner.h"
 #include "timing_api/Scheduler.hpp"
@@ -12,13 +12,15 @@
 int main(){
     ScriptRunner runner;
 
+    // TODO: hook PD into this and see if latency issues are improved
+
     TimingApi timing_api;
     timing_api.applyTimingApi(runner.lua);
 
     VisualEngine ve(runner);
 
-    SC_Server server("127.0.0.1", "7771");
-    AudioApi audio_api(server);
+    pdEngine pd;
+    AudioApi audio_api(pd);
     audio_api.applyAudioApi(runner.lua);
 
     Scheduler scheduler;

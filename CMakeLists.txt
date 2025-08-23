@@ -12,6 +12,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIBLO REQUIRED liblo)
 
 add_subdirectory(sol2)        # provides target: sol2::sol2
+add_subdirectory(libpd)
 
 add_executable(
     deckproto
@@ -29,6 +30,11 @@ find_package(Lua 5.4 REQUIRED)
 target_include_directories(deckproto PRIVATE audio_engine)
 target_link_libraries(deckproto PRIVATE sol2::sol2 ${LUA_LIBRARIES})
 target_include_directories(deckproto PRIVATE ${LUA_INCLUDE_DIR})
+
+target_include_directories(deckproto PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/libpd/libpd_wrapper
+  ${CMAKE_CURRENT_SOURCE_DIR}/libpd/pure-data/src
+)
 
 if (TARGET PkgConfig::LIBLO)
   target_link_libraries(deckproto PRIVATE raylib PkgConfig::LIBLO)
