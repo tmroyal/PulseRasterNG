@@ -1,8 +1,8 @@
 ---@diagnostic disable: undefined-global
 
 fill(1, 1, 1, 1)
-br = synth("bear")
-synth("bugger")
+-- br = synth("bear")
+-- synth("bugger")
 
 -- function DebugPrint()
 --     print("Tick")
@@ -11,10 +11,16 @@ synth("bugger")
 
 -- schedule_with(1, DebugPrint)
 
-metro(1.0, function()
+local last = timeSec()
+
+metro(0.05, function()
     print("Metro Tick")
     print("Time: " .. timeSec())
-    synth("clink")
+    -- synth("clink")
+    chirp()
+    print("error: " .. (timeSec() - last - 0.25))
+    last = timeSec()
+    circle(math.random(0, width), math.random(0, height), 10);
     return 1
 end)
 
@@ -27,8 +33,8 @@ function draw()
     local dist2 = math.sin(timeSec()*0.2*math.pi)
     local level = math.abs(dist);
 
-    synth_set(br, "freq", 200 + level * 400)
-    synth_set(br, "amp", level * 0.3)
+    -- synth_set(br, "freq", 200 + level * 400)
+    -- synth_set(br, "amp", level * 0.3)
 
     rect(width/2 + dist * 100, height/2 + dist2 * 100, 10, 10);
 end

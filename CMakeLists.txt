@@ -9,14 +9,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(raylib 4.5 REQUIRED) # from brew
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(LIBLO REQUIRED liblo)
 
 add_subdirectory(sol2)        # provides target: sol2::sol2
+add_subdirectory(libpd)
 
 add_executable(
     deckproto
     main.cpp
-    audio_engine/SC_Server.cpp
+    audio_engine/pdEngine.cpp
     audio_engine/AudioApi.cpp
     visual_engine/VisualEngine.cpp
     visual_engine/GraphicsApi.cpp
@@ -30,10 +30,8 @@ target_include_directories(deckproto PRIVATE audio_engine)
 target_link_libraries(deckproto PRIVATE sol2::sol2 ${LUA_LIBRARIES})
 target_include_directories(deckproto PRIVATE ${LUA_INCLUDE_DIR})
 
-if (TARGET PkgConfig::LIBLO)
-  target_link_libraries(deckproto PRIVATE raylib PkgConfig::LIBLO)
-else()
-  target_include_directories(deckproto PRIVATE ${LIBLO_INCLUDE_DIRS})
-  target_link_directories(deckproto PRIVATE ${LIBLO_LIBRARY_DIRS})
-  target_link_libraries(deckproto PRIVATE raylib ${LIBLO_LIBRARIES} ${LIBLO_LDFLAGS_OTHER})
-endif()
+target_include_directories(deckproto PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/libpd/libpd_wrapper
+  ${CMAKE_CURRENT_SOURCE_DIR}/libpd/pure-data/src
+)
+target_link_libraries(deckproto PRIVATE raylib libpd)
