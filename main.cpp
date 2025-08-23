@@ -41,8 +41,8 @@ int main(){
             ve.draw();
             next_time += frame_duration;
         }
-        WaitTime(0.001);
         scheduler.consume();
+        WaitTime(0.001);
     }
 
     scheduler.stop();
