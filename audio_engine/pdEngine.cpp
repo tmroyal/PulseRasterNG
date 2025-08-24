@@ -3,6 +3,7 @@
 #include <cstring>
 #include "z_libpd.h"
 #include <filesystem>
+#include <iostream>
 
 namespace fs = std::filesystem;
 
