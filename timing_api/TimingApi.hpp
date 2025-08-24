@@ -1,7 +1,7 @@
 #pragma once
 
-#import <sol/sol.hpp>
-#import <chrono>
+#include <sol/sol.hpp>
+#include <chrono>
 
 class TimingApi {
 public:
