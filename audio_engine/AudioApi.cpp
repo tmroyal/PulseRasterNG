@@ -13,6 +13,6 @@ void AudioApi::applyAudioApi(sol::state& lua){
     //     sc_server.set(node, name, value);
     // });
     lua.set_function("synth", [&](const char* name, const char* msg, sol::variadic_args args) {
-        pdEngine.synth(name, msg, args);
+        pde.synth(name, msg, args);
     });
 }

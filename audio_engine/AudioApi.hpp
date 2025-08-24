@@ -5,8 +5,8 @@
 
 class AudioApi {
 public:
-    AudioApi(pdEngine& pd) : pdEngine(pd) {}
+    AudioApi(pdEngine& pd) : pde(pd) {}
     void applyAudioApi(sol::state& lua);
 private:
-    pdEngine& pdEngine;
+    pdEngine& pde;
 };
