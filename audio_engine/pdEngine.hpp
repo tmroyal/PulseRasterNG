@@ -6,6 +6,7 @@
 #define N_CHANNELS 2
 #define SR 44100
 
+
 class pdEngine {
 public:
     pdEngine();
@@ -15,6 +16,8 @@ public:
     void process(float* in, float* out, unsigned int frames);
 
     void synth(const char* name, const char* msg, sol::variadic_args args);
+
+    void load_all_patches(const std::string& dir);
 private:
     float pdBuffer[N_CHANNELS * PD_BUFFER_SIZE] = {};
     unsigned int pdIndex = N_CHANNELS * PD_BUFFER_SIZE;

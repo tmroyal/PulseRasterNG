@@ -21,11 +21,20 @@ metro(0.125, function()
     -- print("error: " .. (timeSec() - last - 0.25))
     last = timeSec()
     circle(math.random(0, width), math.random(0, height), 10);
-    return 1
 end)
 
-timer(5.0, function()
-    print("Timer Tick")
+local pattern = {
+    "kick", "snare", "kick", "clhh"
+}
+local idx = 1
+
+metro(0.5, function()
+    print("Drum Tick")
+    synth("drumz", pattern[idx])
+    idx = idx + 1
+    if idx > #pattern then
+        idx = 1
+    end
 end)
 
 function draw()

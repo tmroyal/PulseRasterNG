@@ -2,6 +2,9 @@
 
 #include <cstring>
 #include "z_libpd.h"
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 pdEngine::pdEngine() {
 }
@@ -13,7 +16,8 @@ void pdEngine::init() {
     // Initialization code for PD engine
     libpd_init();
     libpd_add_to_search_path("puredata");
-    libpd_openfile("chirp.pd", "puredata");
+    load_all_patches("puredata");
+    // libpd_openfile("chirp.pd", "puredata");
     libpd_init_audio(0, 2, 44100);
 
     // start DSP
@@ -60,4 +64,16 @@ void pdEngine::synth(const char* name, const char* msg, sol::variadic_args args)
         }
     }
     libpd_message(name, msg, atoms.size(), atoms.data());
+}
+
+void pdEngine::load_all_patches(const std::string& dir) {
+    for (const auto& entry : fs::directory_iterator(dir)) {
+        if (entry.path().extension() == ".pd") {
+            auto file = entry.path().filename().string();
+            void* patch = libpd_openfile(file.c_str(), dir.c_str());
+            if (!patch) {
+                std::cerr << "Failed to load: " << file << "\n";
+            }
+        }
+    }
 }
