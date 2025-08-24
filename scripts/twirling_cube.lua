@@ -13,7 +13,7 @@ fill(1, 1, 1, 1)
 
 local last = timeSec()
 
-metro(0.5, function()
+metro(0.125, function()
     print("Metro Tick")
     print("Time: " .. timeSec())
     local freq = math.sin(timeSec()*0.1*math.pi)*200 + 400
