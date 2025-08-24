@@ -6,6 +6,7 @@
 #include "timing_api/Scheduler.hpp"
 #include "visual_engine/VisualEngine.hpp"
 #include "timing_api/TimingApi.hpp"
+#include "controller_engine/ControllerApi.hpp"
 
 int main(){
     ScriptRunner runner;
@@ -35,6 +36,9 @@ int main(){
     Scheduler scheduler;
     scheduler.applySchedulerApi(runner.lua);
     scheduler.start();
+
+    ControllerApi controller_api;
+    controller_api.attach(runner.lua);
 
     runner.load_script("scripts/wiggle_ball.lua");
     runner.load_script("scripts/twirling_cube.lua");

@@ -1,15 +1,6 @@
 ---@diagnostic disable: undefined-global
 
 fill(1, 1, 1, 1)
--- br = synth("bear")
--- synth("bugger")
-
--- function DebugPrint()
---     print("Tick")
---     return 1
--- end
-
--- schedule_with(1, DebugPrint)
 
 local last = timeSec()
 local dist1 = 0
@@ -45,15 +36,16 @@ metro(0.25, function()
     if idx > #pattern1 then
         idx = 1
     end
+
+    if isButtonDown(0, 7) then
+        synth("drumz", "bongo_shak")
+    end
 end)
 
 function draw()
-    dist = math.sin(timeSec()*0.1*math.pi)
-    dist2 = math.sin(timeSec()*0.2*math.pi)
+    dist = getAxis(0,0)
+    dist2 = getAxis(0,1)
     local level = math.abs(dist);
-
-    -- synth_set(br, "freq", 200 + level * 400)
-    -- synth_set(br, "amp", level * 0.3)
 
     rect(width/2 + dist * 100, height/2 + dist2 * 100, 10, 10);
 end
