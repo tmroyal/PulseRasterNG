@@ -13,12 +13,12 @@ fill(1, 1, 1, 1)
 
 local last = timeSec()
 
-metro(0.05, function()
+metro(0.125, function()
     print("Metro Tick")
     print("Time: " .. timeSec())
-    -- synth("clink")
-    chirp()
-    print("error: " .. (timeSec() - last - 0.25))
+    local freq = math.sin(timeSec()*0.1*math.pi)*200 + 400
+    synth("chirp", "note", freq, 0.5)
+    -- print("error: " .. (timeSec() - last - 0.25))
     last = timeSec()
     circle(math.random(0, width), math.random(0, height), 10);
     return 1

@@ -46,7 +46,6 @@ int main(){
     double init_time = GetTime();
     double next_time = init_time + frame_duration;
 
-
     while (!WindowShouldClose()) {
         // sleep until the next frame
         if (GetTime() >= next_time) {

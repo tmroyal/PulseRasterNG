@@ -1,6 +1,7 @@
 #include "pdEngine.hpp"
-#include "z_libpd.h"
+
 #include <cstring>
+#include "z_libpd.h"
 
 pdEngine::pdEngine() {
 }
@@ -21,11 +22,6 @@ void pdEngine::init() {
     libpd_finish_message("pd", "dsp");
 }
 
-void pdEngine::chirp() {
-    // Example function to trigger a sound in PD
-    libpd_bang("chirp"); 
-}
-
 void pdEngine::process(float* in, float* out, unsigned int frames) {
     unsigned samples_needed = frames * N_CHANNELS;
     unsigned copied = 0;
@@ -42,4 +38,26 @@ void pdEngine::process(float* in, float* out, unsigned int frames) {
         pdIndex += take;
         copied  += take;
     }
+}
+
+void pdEngine::synth(const char* name, const char* msg, sol::variadic_args args) {
+    // Example function to trigger a sound in PD
+    std::vector<t_atom> atoms;
+    for (auto v : args) {
+        if (v.is<int>() || v.is<double>()) {
+            t_atom a;
+            libpd_set_float(&a, v.as<float>());
+            atoms.push_back(a);
+        } else if (v.is<std::string>()) {
+            t_atom a;
+            std::string str = v.as<std::string>();
+            libpd_set_symbol(&a, str.c_str());
+            atoms.push_back(a);
+        } else {
+            t_atom a;
+            libpd_set_float(&a, 0.0f); // default to 0.0 for unsupported types
+            atoms.push_back(a);
+        }
+    }
+    libpd_message(name, msg, atoms.size(), atoms.data());
 }

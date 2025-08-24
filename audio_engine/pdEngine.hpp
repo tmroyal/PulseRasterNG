@@ -1,6 +1,7 @@
 #pragma once
 
 #include <raylib.h>
+#include <sol/variadic_args.hpp>
 #define PD_BUFFER_SIZE 64
 #define N_CHANNELS 2
 #define SR 44100
@@ -11,8 +12,9 @@ public:
     ~pdEngine();
 
     void init();
-    void chirp();
     void process(float* in, float* out, unsigned int frames);
+
+    void synth(const char* name, const char* msg, sol::variadic_args args);
 private:
     float pdBuffer[N_CHANNELS * PD_BUFFER_SIZE] = {};
     unsigned int pdIndex = N_CHANNELS * PD_BUFFER_SIZE;
