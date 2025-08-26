@@ -10,6 +10,7 @@ public:
     void draw();
     void inc();
     void run_callback(pdArg arg);
+    void init();
     int store_callback(sol::protected_function cb);
     sol::state lua;
 private:

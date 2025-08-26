@@ -13,4 +13,5 @@ public:
 private:
     Color fillColor{255, 255, 255, 255}; // Default fill color
     Color backgroundColor{0, 0, 0, 255}; // Default background color
+    int thickness = 1;
 };

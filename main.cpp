@@ -44,6 +44,7 @@ int main(){
     runner.load_script("scripts/wiggle_ball.lua");
     runner.load_script("scripts/twirling_cube.lua");
     runner.inc();
+    runner.init();
 
     SetTargetFPS(0) ;
     double desired_fps = 60.0;
@@ -59,7 +60,7 @@ int main(){
         }
         scheduler.consume();
         pdq.drain();
-        WaitTime(0.0005);
+        WaitTime(0.001);
     }
 
     scheduler.stop();

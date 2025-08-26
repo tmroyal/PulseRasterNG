@@ -6,6 +6,14 @@ ScriptRunner::ScriptRunner(){
     lua.open_libraries(sol::lib::base, sol::lib::math);
 }
 
+void ScriptRunner::init(){
+    for (auto env : environments){
+        if (env["init"].valid() && env["init"].is<sol::function>()){
+            env["init"]();
+        }
+    }
+}
+
 void ScriptRunner::inc(){
     if (scripts_loaded){
         currentDrawScript = (currentDrawScript + 1) % environments.size();
@@ -51,7 +59,7 @@ void ScriptRunner::load_script(const char* path){
     }
 
     if (
-        env["draw"].valid()
+        env["draw"].valid() && env["draw"].is<sol::function>()
     ){
         environments.push_back(env);
     } else {
