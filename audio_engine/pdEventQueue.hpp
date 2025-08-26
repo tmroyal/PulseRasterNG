@@ -36,7 +36,6 @@ private:
     static void onBang(const char* recv){
         if (instance->event_map.find(recv) != instance->event_map.end()) {
             for (int token : instance->event_map[recv]) {
-                std::cout << "enqueue bang" << std::endl;
                 pdArg arg;
                 arg.type = BANG;
                 arg.token = token;
@@ -47,7 +46,6 @@ private:
     static void onFloat(const char* recv, float input){
         if (instance->event_map.find(recv) != instance->event_map.end()) {
             for (int token : instance->event_map[recv]) {
-                std::cout << "enqueue float" << input << std::endl;
                 pdArg arg;
                 arg.type = FLOAT;
                 arg.token = token;
@@ -59,7 +57,6 @@ private:
     static void onSymbol(const char* recv, const char* sym){
         if (instance->event_map.find(recv) != instance->event_map.end()) {
             for (int token : instance->event_map[recv]) {
-                std::cout << "enqueue sym: " << sym << std::endl;
                 pdArg arg;
                 arg.type = CHAR;
                 arg.token = token;
