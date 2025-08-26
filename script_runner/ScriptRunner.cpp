@@ -12,14 +12,30 @@ void ScriptRunner::inc(){
     }
 }
 
-void ScriptRunner::run_callback(int token){
-    sol::protected_function cb(callbacks[token]);
-    cb();
+void ScriptRunner::run_callback(pdArg arg){
+    if (callbacks.find(arg.token) == callbacks.end()) {
+        return;
+    }
+
+    sol::protected_function cb = callbacks[arg.token];
+
+    switch (arg.type){
+        case BANG:
+            cb();
+            break;
+        case FLOAT:
+            cb(arg.flt);
+            break;
+        case CHAR:
+            cb(arg.str);
+            break;
+    }
 }
 
 int ScriptRunner::store_callback(sol::protected_function cb){
     int token = current_callback_token++;
-    callbacks[token] = cb;
+    callbacks[token] = std::move(cb);
+    std::cout << token << std::endl;
     return token;
 }
 

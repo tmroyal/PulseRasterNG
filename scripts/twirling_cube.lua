@@ -42,8 +42,9 @@ metro(0.25, function()
     end
 end)
 
-audioEvent("hey", function()
+audioEvent("hey", function(a)
     print("hey event received")
+    print(a)
 end)
 
 function draw()
