@@ -12,6 +12,17 @@ void ScriptRunner::inc(){
     }
 }
 
+void ScriptRunner::run_callback(int token){
+    sol::protected_function cb(callbacks[token]);
+    cb();
+}
+
+int ScriptRunner::store_callback(sol::protected_function cb){
+    int token = current_callback_token++;
+    callbacks[token] = cb;
+    return token;
+}
+
 void ScriptRunner::load_script(const char* path){
     sol::environment env(lua, sol::create, lua.globals());
 

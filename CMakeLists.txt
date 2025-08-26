@@ -12,6 +12,7 @@ find_package(PkgConfig REQUIRED)
 
 add_subdirectory(sol2)        # provides target: sol2::sol2
 add_subdirectory(libpd)
+add_subdirectory(readerwriterqueue)
 
 add_executable(
     deckproto
@@ -26,7 +27,7 @@ add_executable(
 # Lua from system
 find_package(Lua 5.4 REQUIRED)
 
-target_include_directories(deckproto PRIVATE audio_engine)
+target_include_directories(deckproto PRIVATE audio_engine readerwriterqueue)
 target_link_libraries(deckproto PRIVATE sol2::sol2 ${LUA_LIBRARIES})
 target_include_directories(deckproto PRIVATE ${LUA_INCLUDE_DIR})
 

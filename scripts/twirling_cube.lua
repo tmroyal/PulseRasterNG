@@ -42,6 +42,10 @@ metro(0.25, function()
     end
 end)
 
+audioEvent("hey", function()
+    print("hey event received")
+end)
+
 function draw()
     dist = getAxis(0,0)
     dist2 = getAxis(0,1)
