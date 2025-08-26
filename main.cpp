@@ -19,8 +19,9 @@ int main(){
 
     // Setup audio engine
     static pdEngine pd;
+    pdEventQueue pdq(runner);
     AudioApi audio_api(pd);
-    audio_api.applyAudioApi(runner.lua);
+    audio_api.applyAudioApi(runner.lua, runner, pdq);
 
     pd.init();
 
@@ -57,7 +58,8 @@ int main(){
             next_time += frame_duration;
         }
         scheduler.consume();
-        WaitTime(0.001);
+        pdq.drain();
+        WaitTime(0.0005);
     }
 
     scheduler.stop();
