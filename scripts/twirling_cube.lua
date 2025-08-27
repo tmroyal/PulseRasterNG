@@ -6,11 +6,17 @@ local last = timeSec()
 local dist1 = 0
 local dist2 = 0
 
+local coords = {
+    x=50,
+    y=100
+}
+
 metro(0.125, function()
     local freq1 = dist1 * 400 + 200
     local freq2 = dist2 * 400 + 200
     synth("chirp", "note", freq1+freq2, 0.5)
-    circle(math.random(0, width), math.random(0, height), 10);
+    coords.x = math.random(0, width)
+    coords.y = math.random(0, height)
 end)
 
 local pattern1= {
@@ -20,6 +26,7 @@ local pattern2 ={
     false, "clhh", false, "clhh", false, "clhh", false, "ohh"
 }
 local idx = 1
+
 
 metro(0.25, function()
     local d1 = pattern1[idx]
@@ -42,15 +49,14 @@ metro(0.25, function()
     end
 end)
 
-audioEvent("hey", function(a)
-    print("hey event received")
-    print(a)
-end)
+-- audioEvent("hey", function(a)
+-- end)
 
 function draw()
     dist = getAxis(0,0)
     dist2 = getAxis(0,1)
     local level = math.abs(dist);
 
+    circle(coords.x, coords.y, 10);
     rect(width/2 + dist * 100, height/2 + dist2 * 100, 10, 10);
 end

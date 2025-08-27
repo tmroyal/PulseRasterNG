@@ -18,5 +18,6 @@ private:
     std::unordered_map<int, sol::protected_function> callbacks;
     int current_callback_token = 0;
     size_t currentDrawScript;
-    bool scripts_loaded = false;
+    bool draw_scripts_loaded = false;
+    bool is_sol_function(std::string key, sol::environment env);
 };
