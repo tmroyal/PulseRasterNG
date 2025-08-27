@@ -20,14 +20,20 @@ void ScriptRunner::init(std::string dir){
         }
     }
     for (auto env : environments){
-        if (env["init"].valid() && env["init"].is<sol::function>()){
+        if (is_sol_function("init", env)){
             env["init"]();
         }
+        if (is_sol_function("config", env)){
+            env["config"]();
+        }
     }
+    lua.set_function("inc", [&](){
+        inc();
+    });
 }
 
 void ScriptRunner::inc(){
-    if (scripts_loaded){
+    if (draw_scripts_loaded){
         currentDrawScript = (currentDrawScript + 1) % environments.size();
     }
 }
@@ -70,20 +76,25 @@ void ScriptRunner::load_script(const char* path){
         return;
     }
 
-    if (
-        env["draw"].valid() && env["draw"].is<sol::function>()
-    ){
+    if (is_sol_function("draw", env)){
         environments.push_back(env);
+        draw_scripts_loaded = true;
+    } else if (is_sol_function("config", env)){
+        // don't store env if we have no need to access draw
+        env["config"]();
     } else {
-        std::cerr << "All scripts require the following functions: draw" << "\n";
+        std::cerr << "All scripts require one of the following functions: draw, config" << "\n";
     }
-    scripts_loaded = true;
 }
 
 void ScriptRunner::draw(){
-    if (scripts_loaded){
+    if (draw_scripts_loaded){
         size_t index = std::max((size_t) 0, std::min(currentDrawScript, environments.size()-1));
         sol::environment& env = environments[index];
         env["draw"]();
     }
+}
+
+bool ScriptRunner::is_sol_function(std::string key, sol::environment env){
+    return env[key].valid() && env[key].is<sol::function>();
 }
