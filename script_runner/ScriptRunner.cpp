@@ -1,12 +1,24 @@
 #include "ScriptRunner.h"
 #include <iostream>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 
 ScriptRunner::ScriptRunner(){
     lua.open_libraries(sol::lib::base, sol::lib::math);
+
 }
 
-void ScriptRunner::init(){
+void ScriptRunner::init(std::string dir){
+    if (!fs::exists(dir ) || !fs::is_directory(dir)){
+        std::cerr << "Error: directory does not exist: " << dir << std::endl;
+        return;
+    }
+    for (auto& entry : fs::directory_iterator(dir)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".lua") {
+            load_script(entry.path().string().c_str());
+        }
+    }
     for (auto env : environments){
         if (env["init"].valid() && env["init"].is<sol::function>()){
             env["init"]();
