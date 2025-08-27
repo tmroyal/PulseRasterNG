@@ -10,7 +10,7 @@ public:
     void draw();
     void inc();
     void run_callback(pdArg arg);
-    void init();
+    void init(std::string dir);
     int store_callback(sol::protected_function cb);
     sol::state lua;
 private:

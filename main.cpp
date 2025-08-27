@@ -8,7 +8,25 @@
 #include "timing_api/TimingApi.hpp"
 #include "controller_engine/ControllerApi.hpp"
 
-int main(){
+int main(int argc, char* argv[]){
+    std::string pd_dir;
+    std::string lua_dir;    
+
+    for (int i = 1; i < argc; i++) {
+        std::string arg = argv[i];
+        if (arg == "--pdscript" && i + 1 < argc) {
+            pd_dir = argv[++i];
+        } else if (arg == "--luascript" && i + 1 < argc) {
+            lua_dir = argv[++i];
+        }
+    }
+    if (pd_dir.empty()){
+        pd_dir = "./puredata";
+    }
+    if (lua_dir.empty()){
+        lua_dir = "./scripts";
+    }
+
     ScriptRunner runner;
 
     // setup timing and visuals
@@ -23,10 +41,17 @@ int main(){
     AudioApi audio_api(pd);
     audio_api.applyAudioApi(runner.lua, runner, pdq);
 
-    pd.init();
+    pd.init(pd_dir);
 
+    if (!pd.is_initialized()){
+        CloseWindow();
+        std::cerr << "pd failed to initialize" << std::endl;
+        return 1;
+    }
+
+    AudioStream s;
     InitAudioDevice();
-    AudioStream s = LoadAudioStream(SR, 32, N_CHANNELS);
+    s = LoadAudioStream(SR, 32, N_CHANNELS);
     SetAudioStreamCallback(s, [](void * buffer, unsigned int frames){
         pd.process((float*)buffer, (float*)buffer, frames);
     });
@@ -41,10 +66,8 @@ int main(){
     ControllerApi controller_api;
     controller_api.attach(runner.lua);
 
-    runner.load_script("scripts/wiggle_ball.lua");
-    runner.load_script("scripts/twirling_cube.lua");
+    runner.init(lua_dir);
     runner.inc();
-    runner.init();
 
     SetTargetFPS(0) ;
     double desired_fps = 60.0;
@@ -64,7 +87,9 @@ int main(){
     }
 
     scheduler.stop();
-    UnloadAudioStream(s);
+    if (pd.is_initialized()){
+        UnloadAudioStream(s);
+    }
 
     CloseWindow();
 

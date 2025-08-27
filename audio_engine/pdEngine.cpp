@@ -13,18 +13,24 @@ pdEngine::pdEngine() {
 pdEngine::~pdEngine() {
 }
 
-void pdEngine::init() {
+void pdEngine::init(std::string path) {
     // Initialization code for PD engine
+    if (!fs::exists(path) || !fs::is_directory(path)){
+        std::cerr << "Error: directory does not exist: " << path << std::endl;
+        return;
+    }
+
     libpd_init();
-    libpd_add_to_search_path("puredata");
-    load_all_patches("puredata");
-    // libpd_openfile("chirp.pd", "puredata");
+    libpd_add_to_search_path(path.c_str());
+    load_all_patches(path);
     libpd_init_audio(0, 2, 44100);
 
     // start DSP
     libpd_start_message(1);
     libpd_add_float(1.0f);
     libpd_finish_message("pd", "dsp");
+
+    initialized = true;
 }
 
 void pdEngine::process(float* in, float* out, unsigned int frames) {
