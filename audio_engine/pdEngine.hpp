@@ -15,7 +15,9 @@ public:
     void init(std::string path);
     void process(float* in, float* out, unsigned int frames);
 
-    void synth(const char* name, const char* msg, sol::variadic_args args);
+    int load_synth(const char* name);
+    bool free_synth(int handle);
+    void synth(int handle, const char* msg, sol::variadic_args args);
 
     void load_all_patches(const std::string& dir);
     bool is_initialized(){ return initialized; }
@@ -25,4 +27,6 @@ private:
     unsigned int pdTop = N_CHANNELS * PD_BUFFER_SIZE;
     AudioStream s;
     bool initialized = false;
+    std::unordered_map<int, void*> handles;
+    std::string pd_path;
 };

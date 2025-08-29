@@ -19,10 +19,10 @@ void pdEngine::init(std::string path) {
         std::cerr << "Error: directory does not exist: " << path << std::endl;
         return;
     }
+    pd_path = path;
 
     libpd_init();
     libpd_add_to_search_path(path.c_str());
-    load_all_patches(path);
     libpd_init_audio(0, 2, 44100);
 
     // start DSP
@@ -51,7 +51,7 @@ void pdEngine::process(float* in, float* out, unsigned int frames) {
     }
 }
 
-void pdEngine::synth(const char* name, const char* msg, sol::variadic_args args) {
+void pdEngine::synth(int handle, const char* msg, sol::variadic_args args) {
     // Example function to trigger a sound in PD
     std::vector<t_atom> atoms;
     for (auto v : args) {
@@ -70,7 +70,28 @@ void pdEngine::synth(const char* name, const char* msg, sol::variadic_args args)
             atoms.push_back(a);
         }
     }
-    libpd_message(name, msg, atoms.size(), atoms.data());
+    std::string name = std::to_string(handle) + "-rec";
+    libpd_message(name.c_str(), msg, atoms.size(), atoms.data());
+}
+
+int pdEngine::load_synth(const char* name){
+    auto filename = std::string(name) + ".pd";
+    void* vp = libpd_openfile(filename.c_str(), pd_path.c_str());
+    if (!vp){
+        std::cerr << "Failed to load: " << name << "\n";
+        return -1;
+    }
+    int dollar_zero = libpd_getdollarzero(vp);
+    handles[dollar_zero] = vp;
+    return dollar_zero;
+}
+
+bool pdEngine::free_synth(int handle){
+    auto it = handles.find(handle);
+    if (it == handles.end()){ return false; }
+    libpd_closefile(it->second);
+    handles.erase(it);
+    return true;
 }
 
 void pdEngine::load_all_patches(const std::string& dir) {

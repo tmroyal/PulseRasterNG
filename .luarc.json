@@ -1,0 +1,13 @@
+{
+  "Lua.diagnostics.globals": [
+    "synth",
+    "load_synth",
+    "background",
+    "fill",
+    "line",
+    "timeSec",
+    "audioEvent",
+    "width",
+    "height"
+  ]
+}
