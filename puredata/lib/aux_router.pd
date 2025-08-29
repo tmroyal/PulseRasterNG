@@ -1,0 +1,15 @@
+#N canvas 227 172 596 292 12;
+#X obj 180 37 inlet;
+#X obj 38 43 inlet~;
+#X obj 106 51 inlet~;
+#X obj 255 56 inlet;
+#X obj 322 55 inlet;
+#X obj 43 137 simple_router;
+#X obj 189 134 level_router;
+#X connect 0 0 5 2;
+#X connect 1 0 5 0;
+#X connect 1 0 6 0;
+#X connect 2 0 5 1;
+#X connect 2 0 6 1;
+#X connect 3 0 6 2;
+#X connect 4 0 6 3;
