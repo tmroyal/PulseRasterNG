@@ -31,7 +31,8 @@ function init()
 
     synth(delay, "fb",    0.8)
     synth(delay, "level", 0.8)
-    synth(delay, "len",   500)
+    synth(delay, "lenl",   500)
+    synth(delay, "lenr",   600)
 
     synth(metro, "trigger", 1)
 
@@ -65,5 +66,6 @@ function draw()
     l = sine(t, 0.1)
     h = map(l, 0, height)
     line(x_pos(3, 4), h, x_pos(4, 4), h)
-    synth(delay, "len", map(l, 300, 700))
+    synth(delay, "lenl", map(l, 350, 700))
+    synth(delay, "lenr", map(l, 300, 650))
 end
