@@ -16,6 +16,3 @@
 [submodule "puredata/pd-mkmr"]
 	path = puredata/pd-mkmr
 	url = https://github.com/MikeMorenoDSP/pd-mkmr.git
-[submodule "puredata/mtl"]
-	path = puredata/mtl
-	url = https://github.com/patricksebastien/mtl.git
