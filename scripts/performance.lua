@@ -66,6 +66,6 @@ function draw()
     l = sine(t, 0.1)
     h = map(l, 0, height)
     line(x_pos(3, 4), h, x_pos(4, 4), h)
-    synth(delay, "lenl", map(l, 350, 400))
-    synth(delay, "lenr", map(l, 300, 450))
+    synth(delay, "lenl", map(l, 350, 700))
+    synth(delay, "lenr", map(l, 300, 650))
 end
