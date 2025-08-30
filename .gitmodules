@@ -7,9 +7,6 @@
 [submodule "readerwriterqueue"]
 	path = readerwriterqueue
 	url = https://github.com/cameron314/readerwriterqueue.git
-[submodule "puredata/pdkvabs"]
-	path = puredata/pdkvabs
-	url = https://github.com/derekxkwan/pdkvabs.git
 [submodule "puredata/pd-mkmr"]
 	path = puredata/pd-mkmr
 	url = https://github.com/MikeMorenoDSP/pd-mkmr.git
