@@ -7,12 +7,12 @@
 [submodule "readerwriterqueue"]
 	path = readerwriterqueue
 	url = https://github.com/cameron314/readerwriterqueue.git
-[submodule "puredata/ltc"]
-	path = puredata/ltc
-	url = https://github.com/algomusic/Live-Coding-Toolkit-for-Pure-Data.git
 [submodule "puredata/pdkvabs"]
 	path = puredata/pdkvabs
 	url = https://github.com/derekxkwan/pdkvabs.git
 [submodule "puredata/pd-mkmr"]
 	path = puredata/pd-mkmr
 	url = https://github.com/MikeMorenoDSP/pd-mkmr.git
+[submodule "puredata/lct"]
+	path = puredata/lct
+	url = https://github.com/algomusic/Live-Coding-Toolkit-for-Pure-Data
