@@ -8,6 +8,7 @@
     "timeSec",
     "audioEvent",
     "width",
-    "height"
+    "height",
+    "circle"
   ]
 }
