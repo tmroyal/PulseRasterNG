@@ -14,7 +14,6 @@ local function x_pos(i, divisions)
 end
 
 function init()
-
     local master = load_synth("master")
     synth(master, "amp", 0.1)    
 

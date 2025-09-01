@@ -1,4 +1,4 @@
-#N canvas 992 685 854 517 12;
+#N canvas 4 463 854 517 12;
 #X obj 101 307 lct/polysynth~ 400 12 1000;
 #X obj 104 59 r \$0-rec;
 #X obj 102 180 unpack;
