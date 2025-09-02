@@ -8,15 +8,11 @@ function scaled(base)
     end
 end
 
-function fmod(a, b)
-    return a - math.trunc(a/b)*b
-end
-
 function init()
     nexttick = timeSec() + 1
 
-    local master = load_synth("master")
-    synth(master, "amp", 1)
+    local main = load_synth("main")
+    synth(main, "amp", 1)
 
     polysyn = load_synth("lct_polysynth")
     synth(polysyn, "cutoff", 200)

@@ -14,8 +14,8 @@ local function x_pos(i, divisions)
 end
 
 function init()
-    local master = load_synth("master")
-    synth(master, "amp", 0.1)    
+    local main = load_synth("main")
+    synth(main, "amp", 0.1)    
 
     tick  = load_synth("tick")
     metro = load_synth("metronome")
