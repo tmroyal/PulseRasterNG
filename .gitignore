@@ -2,3 +2,4 @@ build/
 .cache
 pieces/
 .gitignore
+.DS_Store
