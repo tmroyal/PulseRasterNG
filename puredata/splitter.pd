@@ -1,0 +1,13 @@
+#N canvas 198 502 477 236 12;
+#X obj 38 170 clone 1 lib/send;
+#X obj 203 14 r \$0-rec;
+#X obj 37 21 catch~ \$0-inl;
+#X obj 92 52 catch~ \$0-inr;
+#X obj 204 50 route size destination;
+#X msg 204 93 resize \$1;
+#X connect 1 0 4 0;
+#X connect 2 0 0 0;
+#X connect 3 0 0 1;
+#X connect 4 0 5 0;
+#X connect 4 1 0 2;
+#X connect 5 0 0 0;
