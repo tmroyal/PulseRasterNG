@@ -1,6 +1,6 @@
-#include "AudioApi.hpp"
+#include "pdApi.hpp"
 
-void AudioApi::applyAudioApi(sol::state& lua, ScriptRunner& runner, pdEventQueue& eventQueue) {
+void pdApi::applyPDApi(sol::state& lua, ScriptRunner& runner, pdEventQueue& eventQueue) {
     lua.set_function("load_patch", [&](const char* name) {
         return pde.load_patch(name);
     });

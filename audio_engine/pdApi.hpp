@@ -25,10 +25,10 @@ struct Patch {
     }
 };
 
-class AudioApi {
+class pdApi {
 public:
-    AudioApi(pdEngine& pd) : pde(pd) {}
-    void applyAudioApi(sol::state& lua, ScriptRunner& runner, pdEventQueue& eventQueue);
+    pdApi(pdEngine& pd) : pde(pd) {}
+    void applyPDApi(sol::state& lua, ScriptRunner& runner, pdEventQueue& eventQueue);
 private:
     pdEngine& pde;
 };
