@@ -1,12 +1,12 @@
 {
   "Lua.diagnostics.globals": [
-    "synth",
-    "load_synth",
+    "msg",
+    "load_patch",
     "background",
     "fill",
     "line",
     "timeSec",
-    "audioEvent",
+    "patchEvent",
     "width",
     "height",
     "circle"

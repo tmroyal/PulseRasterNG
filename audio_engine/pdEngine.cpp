@@ -51,7 +51,7 @@ void pdEngine::process(float* in, float* out, unsigned int frames) {
     }
 }
 
-void pdEngine::synth(int handle, const char* msg, sol::variadic_args args) {
+void pdEngine::msg(int handle, const char* msg, sol::variadic_args args) {
     // Example function to trigger a sound in PD
     std::vector<t_atom> atoms;
     for (auto v : args) {
@@ -74,7 +74,7 @@ void pdEngine::synth(int handle, const char* msg, sol::variadic_args args) {
     libpd_message(name.c_str(), msg, atoms.size(), atoms.data());
 }
 
-int pdEngine::load_synth(const char* name){
+int pdEngine::load_patch(const char* name){
     auto filename = std::string(name) + ".pd";
     void* vp = libpd_openfile(filename.c_str(), pd_path.c_str());
     if (!vp){
@@ -86,7 +86,7 @@ int pdEngine::load_synth(const char* name){
     return dollar_zero;
 }
 
-bool pdEngine::free_synth(int handle){
+bool pdEngine::free_patch(int handle){
     auto it = handles.find(handle);
     if (it == handles.end()){ return false; }
     libpd_closefile(it->second);

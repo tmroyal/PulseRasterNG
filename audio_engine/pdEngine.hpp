@@ -15,9 +15,9 @@ public:
     void init(std::string path);
     void process(float* in, float* out, unsigned int frames);
 
-    int load_synth(const char* name);
-    bool free_synth(int handle);
-    void synth(int handle, const char* msg, sol::variadic_args args);
+    int load_patch(const char* name);
+    bool free_patch(int handle);
+    void msg(int handle, const char* msg, sol::variadic_args args);
 
     void load_all_patches(const std::string& dir);
     bool is_initialized(){ return initialized; }
