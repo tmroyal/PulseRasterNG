@@ -1,34 +1,40 @@
 #pragma once
 
-#include <sol/sol.hpp>
-#include "pdEngine.hpp"
 #include "../script_runner/ScriptRunner.h"
+#include "pdEngine.hpp"
 #include "pdEventQueue.hpp"
+#include <sol/sol.hpp>
 
-struct Patch {
-    int handle;
-    Patch(std::string name, sol::table args, pdEngine& pd){
+class Patch {
+public:
+  Patch(std::string name, sol::table args, pdEngine &pd): pd(pd) {
+    init(name, pd);
+    pd.msg_init(handle, args);
+  }
+  Patch(std::string name, pdEngine &pd): pd(pd) {
+    init(name, pd);
+  }
+  ~Patch(){
+    pd.free_patch(handle);
+  }
+  void msg(const char *msg, sol::variadic_args args) {
+    pd.msg(handle, msg, args);
+  }
 
-        for (auto& kv : args){
-            sol::object key = kv.first;
-            sol::object value = kv.second;    
-        
-            if (!key.is<std::string>()){
-                std::cout << "Warning: non-string detected in table: " << name;
-                continue;
-            }
-
-        }
-    }
-    Patch(std::string name, pdEngine& pd){
-        handle = pd.load_patch(name.c_str());
-    }
+private:
+  int handle;
+  pdEngine& pd;
+  void init(std::string name, pdEngine &pd){
+    handle = pd.load_patch(name.c_str());
+  }
 };
 
 class pdApi {
 public:
-    pdApi(pdEngine& pd) : pde(pd) {}
-    void applyPDApi(sol::state& lua, ScriptRunner& runner, pdEventQueue& eventQueue);
+  pdApi(pdEngine &pd) : pde(pd) {}
+  void applyPDApi(sol::state &lua, ScriptRunner &runner,
+                  pdEventQueue &eventQueue);
+
 private:
-    pdEngine& pde;
+  pdEngine &pde;
 };
