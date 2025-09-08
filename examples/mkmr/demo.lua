@@ -5,20 +5,20 @@ local ind = 0
 function init()
     local main = load_patch("main")
     local reverb = load_patch("vfreeverb")
-    msg(reverb, "size", 0.1)
+    pd_msg(reverb, "size", 0.1)
     local chorus = load_patch("mkmr_chorus")
-    msg(chorus, "destination", reverb)
+    pd_msg(chorus, "destination", reverb)
 
     harp = load_patch("mkmr_harp")
-    msg(harp, "destination", chorus)
+    pd_msg(harp, "destination", chorus)
 
     local phaser = load_patch("mkmr_phaser")
-    msg(phaser, "destination", reverb)
-    msg(phaser, "dl", 1000)
-    msg(phaser, "dr", 9000)
+    pd_msg(phaser, "destination", reverb)
+    pd_msg(phaser, "dl", 1000)
+    pd_msg(phaser, "dr", 9000)
 
     chimes = load_patch("mkmr_chimes")
-    msg(chimes, "destination", phaser)
+    pd_msg(chimes, "destination", phaser)
     next_time = timeSec() + 1
 end
 
@@ -28,9 +28,9 @@ function draw()
         ind = (ind + 1) % 2
         next_time = now + 1
         if ind == 1 then
-            msg(harp, "play", 550, 0.1)
+            pd_msg(harp, "play", 550, 0.1)
         else
-            msg(chimes, "play", 560, 1)
+            pd_msg(chimes, "play", 560, 1)
         end
     end
     circle(width/2, height/2, 10)

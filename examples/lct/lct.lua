@@ -12,21 +12,21 @@ function init()
     nexttick = timeSec() + 1
 
     local main = load_patch("main")
-    msg(main, "amp", 1)
+    pd_msg(main, "amp", 1)
 
     polysyn = load_patch("lct_polysynth")
-    msg(polysyn, "cutoff", 200)
-    msg(polysyn, "attack", 50)
-    msg(polysyn, "release", 100)
+    pd_msg(polysyn, "cutoff", 200)
+    pd_msg(polysyn, "attack", 50)
+    pd_msg(polysyn, "release", 100)
 
     polyfm = load_patch("lct_polyfm")
-    msg(polyfm, "index", 10)
-    msg(polyfm, "ratio", 2.01)
-    msg(polyfm, "attack", 2.01)
-    msg(polyfm, "ratio", 2.01)
+    pd_msg(polyfm, "index", 10)
+    pd_msg(polyfm, "ratio", 2.01)
+    pd_msg(polyfm, "attack", 2.01)
+    pd_msg(polyfm, "ratio", 2.01)
 
     polysample = load_patch("lct_polysampler")
-    msg(polysample, "sample", "samples/pizz.wav")
+    pd_msg(polysample, "sample", "samples/pizz.wav")
     scaler = scaled(61)
 end
 
@@ -34,11 +34,11 @@ function draw()
     local now = timeSec()
     if now > nexttick then
         if ind == 0 then
-            msg(polysyn, "play", 200, 1.0)
+            pd_msg(polysyn, "play", 200, 1.0)
         elseif ind == 1 then
-            msg(polyfm, "play", 400, 0.5)
+            pd_msg(polyfm, "play", 400, 0.5)
         elseif ind == 2 then
-            msg(polysample, "playm", scaler(60), 0.5)
+            pd_msg(polysample, "playm", scaler(60), 0.5)
         end
         nexttick = now + 1
         ind = (ind + 1) % 3

@@ -1,7 +1,8 @@
 {
   "Lua.diagnostics.globals": [
-    "msg",
+    "pd_msg",
     "load_patch",
+    "free_patch",
     "background",
     "fill",
     "line",

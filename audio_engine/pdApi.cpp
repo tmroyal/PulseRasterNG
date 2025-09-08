@@ -9,7 +9,7 @@ void pdApi::applyPDApi(sol::state& lua, ScriptRunner& runner, pdEventQueue& even
         return pde.free_patch(handle);
     });
 
-    lua.set_function("msg", [&](int handle, const char* msg, sol::variadic_args args) {
+    lua.set_function("pd_msg", [&](int handle, const char* msg, sol::variadic_args args) {
         pde.msg(handle, msg, args);
     });
 
