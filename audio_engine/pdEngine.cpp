@@ -68,7 +68,9 @@ void pdEngine::msg_init(int handle, sol::table &args) {
       std::cerr << "Warning: non-string detected in init table" << std::endl;
       continue;
     }
+
     std::vector<t_atom> atoms;
+
     if (value.is<sol::table>()){
         sol::table t = value.as<sol::table>();
         for (std::size_t i = 0; i <= t.size(); i++){
@@ -77,6 +79,7 @@ void pdEngine::msg_init(int handle, sol::table &args) {
     } else {
         atoms.push_back(pdEngine::to_atom(value));
     }
+
     std::string name = std::to_string(handle) + "-rec";
     libpd_message(name.c_str(), key.as<std::string>().c_str(), atoms.size(), atoms.data());
   }

@@ -17,8 +17,12 @@ public:
   ~Patch(){
     pd.free_patch(handle);
   }
-  void msg(const char *msg, sol::variadic_args args) {
+  Patch& msg(const char *msg, sol::variadic_args args) {
     pd.msg(handle, msg, args);
+    return *this;
+  }
+  int id(){
+    return handle;
   }
 
 private:
