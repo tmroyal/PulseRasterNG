@@ -22,7 +22,6 @@ public:
     int load_patch(const char* name);
     bool free_patch(int handle);
     void msg(int handle, const char* msg, sol::variadic_args args);
-    void msg_init(int handle, sol::table& args);
 
     void load_all_patches(const std::string& dir);
     bool is_initialized(){ return initialized; }

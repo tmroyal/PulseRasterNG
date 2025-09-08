@@ -59,32 +59,6 @@ void pdEngine::msg(int handle, const char *msg, sol::variadic_args args) {
   libpd_message(name.c_str(), msg, atoms.size(), atoms.data());
 }
 
-void pdEngine::msg_init(int handle, sol::table &args) {
-  for (auto &kv : args) {
-    sol::object key = kv.first;
-    sol::object value = kv.second;
-
-    if (!key.is<std::string>()) {
-      std::cerr << "Warning: non-string detected in init table" << std::endl;
-      continue;
-    }
-
-    std::vector<t_atom> atoms;
-
-    if (value.is<sol::table>()){
-        sol::table t = value.as<sol::table>();
-        for (std::size_t i = 0; i <= t.size(); i++){
-            atoms.push_back(pdEngine::to_atom(t.get<sol::object>(i)));
-        }
-    } else {
-        atoms.push_back(pdEngine::to_atom(value));
-    }
-
-    std::string name = std::to_string(handle) + "-rec";
-    libpd_message(name.c_str(), key.as<std::string>().c_str(), atoms.size(), atoms.data());
-  }
-}
-
 int pdEngine::load_patch(const char *name) {
   auto filename = std::string(name) + ".pd";
   void *vp = libpd_openfile(filename.c_str(), pd_path.c_str());
