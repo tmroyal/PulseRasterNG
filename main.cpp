@@ -1,4 +1,4 @@
-#include "AudioApi.hpp"
+#include "pdApi.hpp"
 #include "raylib.h"
 
 #include <sol/sol.hpp>
@@ -38,8 +38,8 @@ int main(int argc, char* argv[]){
     // Setup audio engine
     static pdEngine pd;
     pdEventQueue pdq(runner);
-    AudioApi audio_api(pd);
-    audio_api.applyAudioApi(runner.lua, runner, pdq);
+    pdApi pd_api(pd);
+    pd_api.applyPDApi(runner.lua, runner, pdq);
 
     pd.init(pd_dir);
 

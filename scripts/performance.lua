@@ -14,28 +14,28 @@ local function x_pos(i, divisions)
 end
 
 function init()
-    local main = load_synth("main")
-    synth(main, "amp", 0.1)    
+    local main = load_patch("main")
+    pd_msg(main, "amp", 0.1)    
 
-    tick  = load_synth("tick")
-    metro = load_synth("metronome")
-    delay = load_synth("delay")
+    tick  = load_patch("tick")
+    metro = load_patch("metronome")
+    delay = load_patch("delay")
 
-    synth(tick,  "fx-route",  delay)
-    synth(tick,  "fx-amount", 0.8)
+    pd_msg(tick,  "fx-route",  delay)
+    pd_msg(tick,  "fx-amount", 0.8)
 
-    synth(metro, "destination", tick)
-    synth(metro, "message", "play", 440, 0.3)
-    synth(metro, "interval", 500)
+    pd_msg(metro, "destination", tick)
+    pd_msg(metro, "message", "play", 440, 0.3)
+    pd_msg(metro, "interval", 500)
 
-    synth(delay, "fb",    0.8)
-    synth(delay, "level", 0.8)
-    synth(delay, "lenl",   500)
-    synth(delay, "lenr",   600)
+    pd_msg(delay, "fb",    0.8)
+    pd_msg(delay, "level", 0.8)
+    pd_msg(delay, "lenl",   500)
+    pd_msg(delay, "lenr",   600)
 
-    synth(metro, "trigger", 1)
+    pd_msg(metro, "trigger", 1)
 
-    audioEvent(tostring(metro) .. "-tick", function()
+    patchEvent(tostring(metro) .. "-tick", function()
         background(math.random() * 0.5, 0, 0, 1.0)
     end)
 
@@ -48,7 +48,7 @@ function draw()
     local l1 = sine(t, 0.5)
 
     -- Update metro message with dynamic freq and duration
-    synth(metro, "message", "play", map(l, 220, 880), map(l1, 0.05, 1.0))
+    pd_msg(metro, "message", "play", map(l, 220, 880), map(l1, 0.05, 1.0))
 
     -- Draw lines evenly spaced
     local h = map(l, 0, height)
@@ -60,11 +60,11 @@ function draw()
     l = sine(t, 0.3)
     h = map(l, 0, height)
     line(x_pos(2, 4), h, x_pos(3, 4), h)
-    synth(metro, "interval", map(l, 200, 800))
+    pd_msg(metro, "interval", map(l, 200, 800))
 
     l = sine(t, 0.1)
     h = map(l, 0, height)
     line(x_pos(3, 4), h, x_pos(4, 4), h)
-    synth(delay, "lenl", map(l, 350, 400))
-    synth(delay, "lenr", map(l, 300, 450))
+    pd_msg(delay, "lenl", map(l, 350, 400))
+    pd_msg(delay, "lenr", map(l, 300, 450))
 end
