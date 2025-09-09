@@ -45,7 +45,6 @@ void ScriptRunner::run_callback(pdArg arg){
     if (callbacks.find(arg.token) == callbacks.end()) {
         return;
     }
-
     sol::protected_function cb = callbacks[arg.token];
 
     switch (arg.type){
@@ -64,7 +63,6 @@ void ScriptRunner::run_callback(pdArg arg){
 int ScriptRunner::store_callback(sol::protected_function cb){
     int token = current_callback_token++;
     callbacks[token] = std::move(cb);
-    std::cout << token << std::endl;
     return token;
 }
 

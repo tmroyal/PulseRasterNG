@@ -53,7 +53,7 @@
 #X connect 9 0 11 0;
 #X connect 10 0 9 0;
 #X restore 82 169 pd noise_patch;
-#X obj 52 87 route freq amp destination fx-route fx-amount;
+#X obj 52 87 route freq amp destination fx_route fx_amount;
 #X obj 110 203 lib/control 0 1;
 #X obj 79 238 *~;
 #X obj 44 240 *~;

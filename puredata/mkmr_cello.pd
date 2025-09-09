@@ -8,7 +8,7 @@
 #X obj 70 456 clone -s 1 8 pd-mkmr/instruments/cello;
 #X obj 61 355 pack f f f;
 #X obj 64 126 unpack 0 0 1000;
-#X obj 64 75 route play note_on note_off destination fx-route fx-amount;
+#X obj 64 75 route play note_on note_off destination fx_route fx_amount;
 #X obj 194 125 unpack 0 0;
 #X msg 300 126 \$1 0;
 #X obj 300 168 unpack;
