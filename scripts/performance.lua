@@ -21,8 +21,8 @@ function init()
     metro = load_patch("metronome")
     delay = load_patch("delay")
 
-    pd_msg(tick,  "fx-route",  delay)
-    pd_msg(tick,  "fx-amount", 0.8)
+    pd_msg(tick,  "fx_route",  delay)
+    pd_msg(tick,  "fx_amount", 0.8)
 
     pd_msg(metro, "destination", tick)
     pd_msg(metro, "message", "play", 440, 0.3)

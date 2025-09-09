@@ -7,7 +7,7 @@
 #X obj 51 34 r \$0-rec;
 #X obj 89 184 clip -1 1;
 #X obj 45 457 lib/aux_router;
-#X obj 51 76 route play destination fx-route fx-amount;
+#X obj 51 76 route play destination fx_route fx_amount;
 #X connect 0 0 2 0;
 #X connect 1 0 3 0;
 #X connect 1 1 6 0;

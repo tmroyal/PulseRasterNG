@@ -6,7 +6,7 @@
 #X obj 97 415 lib/aux_router;
 #X obj 169 231 * 127;
 #X obj 144 259 * 127;
-#X obj 105 118 route play playm index ratio attack release destination fx-route fx-amount;
+#X obj 105 118 route play playm index ratio attack release destination fx_route fx_amount;
 #X obj 101 307 lct/polyfm~ 20 1 12 350;
 #X connect 0 0 7 0;
 #X connect 1 0 2 0;

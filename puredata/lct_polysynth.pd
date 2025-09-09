@@ -4,7 +4,7 @@
 #X obj 102 180 unpack;
 #X obj 103 234 ftom;
 #X obj 155 180 unpack;
-#X obj 105 118 route play playm cutoff attack release destination fx-route fx-amount;
+#X obj 105 118 route play playm cutoff attack release destination fx_route fx_amount;
 #X obj 112 415 lib/aux_router;
 #X obj 147 262 * 127;
 #X obj 207 262 * 127;

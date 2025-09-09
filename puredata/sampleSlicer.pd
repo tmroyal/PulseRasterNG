@@ -7,7 +7,7 @@
 #X obj 414 82 loadbang;
 #X obj 414 106 f \$0;
 #X msg 367 168 read -resize \$1 \$2-sl \$2-sr;
-#X obj 64 75 route play destination fx-route fx-amount sample;
+#X obj 64 75 route play destination fx_route fx_amount sample;
 #X obj 362 198 soundfiler;
 #X obj 425 231 unpack f f f;
 #X obj 506 281 expr if ($f1 == 1 \, 1 \, 0);

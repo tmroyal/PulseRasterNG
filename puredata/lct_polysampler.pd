@@ -6,7 +6,7 @@
 #X obj 97 415 lib/aux_router;
 #X obj 169 231 * 127;
 #X obj 144 259 * 127;
-#X obj 105 118 route play playm sample speed start end destination fx-route fx-amount;
+#X obj 105 118 route play playm sample speed start end destination fx_route fx_amount;
 #X obj 101 307 lct/polysample~ samples/hello.wav;
 #N canvas 179 223 450 300 dir 0;
 #X obj 32 71 symbol;
