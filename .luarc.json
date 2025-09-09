@@ -10,6 +10,7 @@
     "patchEvent",
     "width",
     "height",
-    "circle"
+    "circle",
+    "Patch"
   ]
 }

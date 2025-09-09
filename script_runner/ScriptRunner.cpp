@@ -5,7 +5,7 @@
 namespace fs = std::filesystem;
 
 ScriptRunner::ScriptRunner(){
-    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string);
+    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table);
 
     // TODO: iterate and store file_name -> FileName
     sol::table p = lua.require_file("patch", "prng_lua_lib/patch.lua");
