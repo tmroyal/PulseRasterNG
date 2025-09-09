@@ -78,6 +78,14 @@ void ScriptRunner::load_script(const char* path){
         std::cerr << "Error loading script file: " << e.what() << "\n";
         return;
     }
+    std::filesystem::path p = std::filesystem::absolute(path); 
+
+    std::string dir = p.parent_path().string();
+
+    if (!dir.empty() && dir.back() != '/'){
+        dir.push_back('/');
+    }
+    env["script_dir"] = dir;
 
     if (is_sol_function("draw", env)){
         environments.push_back(env);
