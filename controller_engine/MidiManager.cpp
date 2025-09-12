@@ -1,7 +1,5 @@
 #include "MidiManager.hpp"
 #include <iostream>
-#include <thread>
-#include <chrono>
 
 using std::cout;
 
