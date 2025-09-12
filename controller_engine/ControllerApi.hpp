@@ -22,6 +22,7 @@ public:
             return IsGamepadButtonDown(gamepad, button);
         });
         lua.set_function("openPort", [this](int number, const std::string& name) -> bool {
+            std::cout << "opening port " << name << std::endl;
             return midiManager.openInputPort(number, name);
         });
     }
