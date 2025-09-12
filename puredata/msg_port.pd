@@ -1,0 +1,13 @@
+#N canvas 123 865 418 412 12;
+#X obj 60 41 r \$0-rec;
+#X obj 57 120 symbol;
+#X obj 99 302 s;
+#X obj 58 79 route name bang float symbol;
+#X obj 247 168 print list;
+#X connect 0 0 3 0;
+#X connect 1 0 2 1;
+#X connect 3 0 1 0;
+#X connect 3 1 2 0;
+#X connect 3 2 2 0;
+#X connect 3 3 2 0;
+#X connect 3 4 4 0;
