@@ -13,6 +13,7 @@ find_package(PkgConfig REQUIRED)
 add_subdirectory(sol2)        # provides target: sol2::sol2
 add_subdirectory(libpd)
 add_subdirectory(readerwriterqueue)
+add_subdirectory(libremidi)
 
 add_executable(
     deckproto
@@ -23,6 +24,7 @@ add_executable(
     visual_engine/GraphicsApi.cpp
     script_runner/ScriptRunner.cpp
     timing_api/Scheduler.cpp
+    controller_engine/MidiManager.cpp
 )
 # Lua from system
 find_package(Lua 5.4 REQUIRED)
@@ -35,4 +37,4 @@ target_include_directories(deckproto PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/libpd/libpd_wrapper
   ${CMAKE_CURRENT_SOURCE_DIR}/libpd/pure-data/src
 )
-target_link_libraries(deckproto PRIVATE raylib libpd)
+target_link_libraries(deckproto PRIVATE raylib libpd libremidi)

@@ -7,6 +7,7 @@
 #include "visual_engine/VisualEngine.hpp"
 #include "timing_api/TimingApi.hpp"
 #include "controller_engine/ControllerApi.hpp"
+#include "controller_engine/MidiManager.hpp"
 
 int main(int argc, char* argv[]){
     std::string pd_dir;
@@ -18,6 +19,9 @@ int main(int argc, char* argv[]){
             pd_dir = argv[++i];
         } else if (arg == "--luascript" && i + 1 < argc) {
             lua_dir = argv[++i];
+        } else if (arg == "--list-ports") {
+            MidiManager::listPorts();
+            return 0;
         }
     }
     if (pd_dir.empty()){
