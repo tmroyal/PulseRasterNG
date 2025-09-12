@@ -20,6 +20,7 @@ add_executable(
     main.cpp
     audio_engine/pdEngine.cpp
     audio_engine/pdApi.cpp
+    audio_engine/pdMidi.cpp
     visual_engine/VisualEngine.cpp
     visual_engine/GraphicsApi.cpp
     script_runner/ScriptRunner.cpp

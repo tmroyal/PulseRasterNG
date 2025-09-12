@@ -8,6 +8,7 @@
 #include "timing_api/TimingApi.hpp"
 #include "controller_engine/ControllerApi.hpp"
 #include "controller_engine/MidiManager.hpp"
+#include "audio_engine/pdMidi.hpp"
 
 int main(int argc, char* argv[]){
     std::string pd_dir;
@@ -67,7 +68,11 @@ int main(int argc, char* argv[]){
     scheduler.applySchedulerApi(runner.lua);
     scheduler.start();
 
-    ControllerApi controller_api;
+    // Setup MIDI
+    pdMidi pd_midi;
+    MidiManager midi_manager(pd_midi);
+    
+    ControllerApi controller_api(midi_manager);
     controller_api.attach(runner.lua);
 
     runner.init(lua_dir);

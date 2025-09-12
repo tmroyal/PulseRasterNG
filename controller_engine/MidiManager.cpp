@@ -22,6 +22,15 @@ bool MidiManager::openInputPort(int number, const std::string& name){
         return true; // Already open
     }
     
+    // Check for port number collision
+    for (const auto& pair : openPorts) {
+        if (pair.second.portNumber == number) {
+            std::cerr << "Port number " << number << " is already assigned to MIDI port '" 
+                      << pair.first << "'. Please use a different port number." << std::endl;
+            return false;
+        }
+    }
+    
     try {
         auto my_callback = [this, number](const libremidi::message& message) {
             pdm.sendMidi(number, message);
@@ -32,7 +41,7 @@ bool MidiManager::openInputPort(int number, const std::string& name){
         );
         
         midi->open_port(getPortByName(name));
-        openPorts[name] = std::move(midi);
+        openPorts[name] = {std::move(midi), number};
         return true;
     } catch (const std::exception& e) {
         std::cerr << "Failed to open MIDI port '" << name << "': " << e.what() << std::endl;
@@ -43,14 +52,14 @@ bool MidiManager::openInputPort(int number, const std::string& name){
 void MidiManager::closeInputPort(const std::string& name){
     auto it = openPorts.find(name);
     if (it != openPorts.end()) {
-        it->second->close_port();
+        it->second.midiInput->close_port();
         openPorts.erase(it);
     }
 }
 
 void MidiManager::closeAllPorts(){
     for (auto& pair : openPorts) {
-        pair.second->close_port();
+        pair.second.midiInput->close_port();
     }
     openPorts.clear();
 }

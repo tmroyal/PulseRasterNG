@@ -19,7 +19,12 @@ public:
     void closeInputPort(const std::string& portName);
     void closeAllPorts();
 private:
+    struct MidiPortInfo {
+        std::unique_ptr<libremidi::midi_in> midiInput;
+        int portNumber;
+    };
+    
     libremidi::input_port& getPortByName(const std::string& port);
     pdMidi& pdm;
-    std::unordered_map<std::string, std::unique_ptr<libremidi::midi_in>> openPorts;
+    std::unordered_map<std::string, MidiPortInfo> openPorts;
 };
