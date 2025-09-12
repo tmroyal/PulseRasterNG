@@ -15,6 +15,16 @@ public:
         libpd_set_banghook(onBang);
         libpd_set_floathook(onFloat);
         libpd_set_symbolhook(onSymbol); 
+    
+        libpd_set_listhook(
+        [](const char *recv, int argc, t_atom *argv) {
+            std::printf("[%s] list (unsupported)\n", recv);
+        });
+
+        libpd_set_messagehook(
+        [](const char *recv, const char *sel, int argc, t_atom *argv) {
+            std::printf("[%s] message (unsupported selector=%s)\n", recv, sel);
+        });
     }
     ~pdEventQueue(){
         instance = nullptr;

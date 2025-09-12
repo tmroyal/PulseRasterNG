@@ -54,9 +54,6 @@ function Patch:free()
   end
 end
 
--- Auto-free if GC'd (best-effort)
-function Patch:__gc() self:free() end
-
 return setmetatable(Patch, {
   __call = function(_, name, args) return Patch:new(name, args) end
 })

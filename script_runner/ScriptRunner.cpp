@@ -5,11 +5,13 @@
 namespace fs = std::filesystem;
 
 ScriptRunner::ScriptRunner(){
-    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table);
+    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table, sol::lib::debug);
 
     // TODO: iterate and store file_name -> FileName
     sol::table p = lua.require_file("patch", "prng_lua_lib/patch.lua");
     lua["Patch"] = p;
+
+    garbage_collector = lua["collectgarbage"];
 }
 
 void ScriptRunner::init(std::string dir){
@@ -33,6 +35,19 @@ void ScriptRunner::init(std::string dir){
     lua.set_function("inc", [&](){
         inc();
     });
+
+    lua.set_exception_handler([](lua_State* L,
+        sol::optional<const std::exception&> maybe,
+        sol::string_view desc) -> int {
+        std::string msg;
+        if (maybe)  msg = std::string("C++ exception: ") + maybe->what();
+        else        msg = std::string("Lua error: ") + std::string(desc.data(), desc.size());
+        return sol::stack::push(L, msg); // pushes 1 value; return 1
+    });
+}
+
+void ScriptRunner::gc(){
+    garbage_collector("step", 20);
 }
 
 void ScriptRunner::inc(){
@@ -46,17 +61,22 @@ void ScriptRunner::run_callback(pdArg arg){
         return;
     }
     sol::protected_function cb = callbacks[arg.token];
+    sol::protected_function_result r;
 
     switch (arg.type){
         case BANG:
-            cb();
+            r = cb();
             break;
         case FLOAT:
-            cb(arg.flt);
+            r = cb(arg.flt);
             break;
         case CHAR:
-            cb(arg.str);
+            r = cb(arg.str);
             break;
+    }
+    if (!r.valid()) {
+        sol::error err = r;
+        std::cerr << "Lua error: " << err.what() << std::endl;
     }
 }
 

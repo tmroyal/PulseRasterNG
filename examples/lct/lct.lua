@@ -43,7 +43,6 @@ function draw()
         nexttick = now + 1
         ind = (ind + 1) % 3
     end
-    
     local position = math.fmod(width * timeSec() / 3, width)
     circle(position, height/2, 10)
 end

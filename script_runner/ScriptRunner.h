@@ -12,6 +12,7 @@ public:
     void run_callback(pdArg arg);
     void init(std::string dir);
     int store_callback(sol::protected_function cb);
+    void gc();
     sol::state lua;
 private:
     std::vector<sol::environment> environments;
@@ -20,4 +21,5 @@ private:
     size_t currentDrawScript;
     bool draw_scripts_loaded = false;
     bool is_sol_function(std::string key, sol::environment env);
+    sol::protected_function garbage_collector;
 };
