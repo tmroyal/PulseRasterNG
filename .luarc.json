@@ -11,7 +11,9 @@
     "width",
     "height",
     "circle",
+    "rect",
     "Patch",
-    "script_dir"
+    "script_dir",
+    "thickness"
   ]
 }

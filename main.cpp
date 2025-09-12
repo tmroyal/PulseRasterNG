@@ -75,11 +75,17 @@ int main(int argc, char* argv[]){
     double init_time = GetTime();
     double next_time = init_time + frame_duration;
 
+    int gc_i = 0;
     while (!WindowShouldClose()) {
         // sleep until the next frame
         if (GetTime() >= next_time) {
             ve.draw();
             next_time += frame_duration;
+            // manual GC every 1024 frames
+            if (++gc_i > 1024){
+                runner.gc();
+                gc_i = 0;
+            }
         }
         scheduler.consume();
         pdq.drain();
