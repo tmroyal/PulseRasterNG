@@ -13,3 +13,6 @@
 [submodule "puredata/lct"]
 	path = puredata/lct
 	url = https://github.com/algomusic/Live-Coding-Toolkit-for-Pure-Data
+[submodule "libremidi"]
+	path = libremidi
+	url = https://github.com/celtera/libremidi
