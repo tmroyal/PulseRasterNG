@@ -19,6 +19,7 @@ void MidiManager::listPorts() {
 
 bool MidiManager::openInputPort(int number, const std::string& name){
     if (openPorts.find(name) != openPorts.end()) {
+        std::cout << "Port " << name << " already open" << std::endl;
         return true; // Already open
     }
     
@@ -40,11 +41,26 @@ bool MidiManager::openInputPort(int number, const std::string& name){
             libremidi::input_configuration{ .on_message = my_callback }
         );
         
-        midi->open_port(getPortByName(name));
+        auto port = getPortByName(name);
+        auto error = midi->open_port(port);
+        
+        // Check if opening failed
+        if (error != stdx::error{}) {
+            std::cerr << "Failed to open port '" << name << "'" << std::endl;
+            return false;
+        }
+        
+        // Double-check that port is actually open
+        if (!midi->is_port_open()) {
+            std::cerr << "Port '" << name << "' reported as closed after opening" << std::endl;
+            return false;
+        }
+        
         openPorts[name] = {std::move(midi), number};
+        cout << "Successfully opened port: " << name << std::endl;
         return true;
     } catch (const std::exception& e) {
-        std::cerr << "Failed to open MIDI port '" << name << "': " << e.what() << std::endl;
+        std::cerr << "Exception creating MIDI input for '" << name << "': " << e.what() << std::endl;
         return false;
     }
 }

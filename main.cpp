@@ -68,13 +68,14 @@ int main(int argc, char* argv[]){
     scheduler.applySchedulerApi(runner.lua);
     scheduler.start();
 
-    // Setup MIDI
+    // Setup MIDI (after pd.init() so libpd is initialized)
     pdMidi pd_midi;
     MidiManager midi_manager(pd_midi);
     
     ControllerApi controller_api(midi_manager);
     controller_api.attach(runner.lua);
 
+    // WaitTime(1);
     runner.init(lua_dir);
     runner.inc();
 
