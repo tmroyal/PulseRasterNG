@@ -16,6 +16,7 @@
     "rect",
     "script_dir",
     "text",
+    "textWidth",
     "thickness",
     "timeSec",
     "width"

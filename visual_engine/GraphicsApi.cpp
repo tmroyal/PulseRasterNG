@@ -68,4 +68,8 @@ void GraphicsApi::applyGraphicsApi(sol::state& lua){
     lua.set_function("text", [&](const std::string& text, float x, float y, float fontSize){
         DrawText(text.c_str(), (int)x, (int)y, (int)fontSize, fillColor);
     });
+
+    lua.set_function("textWidth", [&](const std::string& text, float fontSize) {
+        return (float)MeasureText(text.c_str(), (int)fontSize);
+    });
 }
