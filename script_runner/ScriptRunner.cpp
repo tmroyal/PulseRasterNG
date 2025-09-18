@@ -8,8 +8,11 @@ ScriptRunner::ScriptRunner(){
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table, sol::lib::debug);
 
     // TODO: iterate and store file_name -> FileName
-    sol::table p = lua.require_file("patch", "prng_lua_lib/patch.lua");
-    lua["Patch"] = p;
+    lua["Patch"] = lua.require_file("patch", "prng_lua_lib/patch.lua");
+    sol::table display_elements = lua.require_file("display_elements", "prng_lua_lib/display_elements.lua");
+    for (auto& pair : display_elements) {
+        lua[pair.first.as<std::string>()] = pair.second;
+    }
 
     garbage_collector = lua["collectgarbage"];
 }

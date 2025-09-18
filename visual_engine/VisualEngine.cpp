@@ -1,8 +1,8 @@
 #include "VisualEngine.hpp"
 #include "raylib.h"
 
-VisualEngine::VisualEngine(ScriptRunner& runner) 
-    : script_runner(runner)
+VisualEngine::VisualEngine(ScriptRunner& runner, TimingApi& timing_api)
+    : script_runner(runner), timing_api(timing_api)
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1280, 800, "PulseRasterNG");
@@ -14,6 +14,7 @@ VisualEngine::VisualEngine(ScriptRunner& runner)
 
 
 void VisualEngine::draw() {
+    timing_api.updateFrameDelta();
     BeginDrawing();
         ClearBackground(graphics_api.getBackgroundColor());
         script_runner.draw();

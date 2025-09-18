@@ -1,20 +1,27 @@
 {
   "Lua.diagnostics.globals": [
-    "pd_msg",
-    "load_patch",
-    "free_patch",
     "background",
-    "fill",
-    "line",
-    "timeSec",
-    "patchEvent",
-    "width",
-    "height",
+    "box",
     "circle",
-    "rect",
+    "dt",
+    "fill",
+    "free_patch",
+    "height",
+    "line",
+    "load_patch",
+    "openPort",
+    "Knob",
     "Patch",
+    "patchEvent",
+    "pd_msg",
+    "rect",
+    "ring",
     "script_dir",
+    "Slider",
+    "text",
+    "textWidth",
     "thickness",
-    "openPort"
+    "timeSec",
+    "width"
   ]
 }

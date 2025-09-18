@@ -35,7 +35,7 @@ int main(int argc, char* argv[]){
     TimingApi timing_api;
     timing_api.applyTimingApi(runner.lua);
 
-    VisualEngine ve(runner);
+    VisualEngine ve(runner, timing_api);
 
     // Setup audio engine
     static pdEngine pd;

@@ -46,7 +46,8 @@ void GraphicsApi::applyGraphicsApi(sol::state& lua){
 
     lua.set_function("ring", [&](float x, float y, float radius){
         Vector2 center{x, y};
-        DrawRing(center, radius-thickness, radius, 0, 360, 0, fillColor);
+        int segments = std::max(32, (int) radius/16);
+        DrawRing(center, radius-thickness, radius, 0, 360, segments, fillColor);
     });
 
     lua.set_function("line", [&](float x1, float y1, float x2, float y2){
@@ -63,5 +64,13 @@ void GraphicsApi::applyGraphicsApi(sol::state& lua){
     lua.set_function("polyline", [&](float x, float y, int sides, float raidus, float rotation){
         Vector2 center{x, y};
         DrawPolyLinesEx(center, sides, raidus, rotation, thickness, fillColor);
+    });
+
+    lua.set_function("text", [&](const std::string& text, float x, float y, float fontSize){
+        DrawText(text.c_str(), (int)x, (int)y, (int)fontSize, fillColor);
+    });
+
+    lua.set_function("textWidth", [&](const std::string& text, float fontSize) {
+        return (float)MeasureText(text.c_str(), (int)fontSize);
     });
 }
