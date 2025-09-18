@@ -12,7 +12,6 @@ function init()
 end
 
 function draw()
-
     slider_v:draw();
     slider_h:draw();
     knob:draw();
