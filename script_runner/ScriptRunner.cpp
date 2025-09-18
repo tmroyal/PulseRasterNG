@@ -10,7 +10,9 @@ ScriptRunner::ScriptRunner(){
     // TODO: iterate and store file_name -> FileName
     lua["Patch"] = lua.require_file("patch", "prng_lua_lib/patch.lua");
     sol::table display_elements = lua.require_file("display_elements", "prng_lua_lib/display_elements.lua");
-    lua["Slider"] = display_elements["Slider"];
+    for (auto& pair : display_elements) {
+        lua[pair.first.as<std::string>()] = pair.second;
+    }
 
     garbage_collector = lua["collectgarbage"];
 }

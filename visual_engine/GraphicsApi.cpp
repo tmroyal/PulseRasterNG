@@ -46,7 +46,8 @@ void GraphicsApi::applyGraphicsApi(sol::state& lua){
 
     lua.set_function("ring", [&](float x, float y, float radius){
         Vector2 center{x, y};
-        DrawRing(center, radius-thickness, radius, 0, 360, 0, fillColor);
+        int segments = std::max(32, (int) radius/16);
+        DrawRing(center, radius-thickness, radius, 0, 360, segments, fillColor);
     });
 
     lua.set_function("line", [&](float x1, float y1, float x2, float y2){
