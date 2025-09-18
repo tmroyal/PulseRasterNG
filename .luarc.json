@@ -1,7 +1,9 @@
 {
   "Lua.diagnostics.globals": [
     "background",
+    "box",
     "circle",
+    "dt",
     "fill",
     "free_patch",
     "height",
