@@ -25,9 +25,6 @@ int main(int argc, char* argv[]){
             return 0;
         }
     }
-    if (pd_dir.empty()){
-        pd_dir = "./puredata";
-    }
     if (lua_dir.empty()){
         lua_dir = "./scripts";
     }

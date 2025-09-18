@@ -12,14 +12,26 @@ pdEngine::~pdEngine() {}
 
 void pdEngine::init(std::string path) {
   // Initialization code for PD engine
-  if (!fs::exists(path) || !fs::is_directory(path)) {
+
+  if (!path.empty() && (!fs::exists(path) || !fs::is_directory(path))) {
     std::cerr << "Error: directory does not exist: " << path << std::endl;
     return;
   }
-  pd_path = path;
+
+  if (!path.empty()) {
+    pd_path = path;
+  }
 
   libpd_init();
-  libpd_add_to_search_path(path.c_str());
+
+  // Always add ./puredata to search path
+  libpd_add_to_search_path("./puredata");
+
+  // Add provided directory to search path if it exists and is different from ./puredata
+  if (!path.empty() && path != "./puredata") {
+    libpd_add_to_search_path(path.c_str());
+  }
+
   libpd_init_audio(0, 2, 44100);
 
   // start DSP
@@ -61,7 +73,18 @@ void pdEngine::msg(int handle, const char *msg, sol::variadic_args args) {
 
 int pdEngine::load_patch(const char *name) {
   auto filename = std::string(name) + ".pd";
-  void *vp = libpd_openfile(filename.c_str(), pd_path.c_str());
+  void *vp = nullptr;
+
+  // Try to load from pd_path first if it's set
+  if (!pd_path.empty()) {
+    vp = libpd_openfile(filename.c_str(), pd_path.c_str());
+  }
+
+  // If that failed or pd_path is empty, try loading from "./puredata"
+  if (!vp) {
+    vp = libpd_openfile(filename.c_str(), "./puredata");
+  }
+
   if (!vp) {
     std::cerr << "Failed to load: " << name << "\n";
     return -1;
