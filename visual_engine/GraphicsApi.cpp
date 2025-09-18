@@ -64,4 +64,8 @@ void GraphicsApi::applyGraphicsApi(sol::state& lua){
         Vector2 center{x, y};
         DrawPolyLinesEx(center, sides, raidus, rotation, thickness, fillColor);
     });
+
+    lua.set_function("text", [&](const std::string& text, float x, float y, float fontSize){
+        DrawText(text.c_str(), (int)x, (int)y, (int)fontSize, fillColor);
+    });
 }
