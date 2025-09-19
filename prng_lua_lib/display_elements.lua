@@ -4,19 +4,21 @@ local Slider = {}
 -- patch.lua
 Slider.__index = Slider
 
-function Slider:new(label, x, y, w, h, vertical, init)
+function Slider:new(args)
     local o = {}
     setmetatable(o, self)
     self.__index = self
-    o.label = label
-    o.x = x
-    o.y = y
-    o.w = w
-    o.h = h
-    o.vertical = vertical
-    o.value = init or 0.5
-    local tw = textWidth(label, 12)
-    o._text_x = x + (w - tw) / 2
+
+    o.label = args.label or ""
+    o.x = args.x or 0
+    o.y = args.y or 0
+    o.w = args.width or args.w or 100
+    o.h = args.height or args.h or 20
+    o.vertical = args.vertical or false
+    o.value = args.value or 0.5
+
+    local tw = textWidth(o.label, 12)
+    o._text_x = o.x + (o.w - tw) / 2
     return o
 end
 
@@ -42,17 +44,19 @@ end
 local Knob = {}
 Knob.__index = Knob
 
-function Knob:new(label, x, y, radius, init)
+function Knob:new(args)
     local o = {}
     setmetatable(o, self)
     self.__index = self
-    o.label = label
-    o.x = x
-    o.y = y
-    o.radius = radius
-    o.value = init or 0.5
-    local tw = textWidth(label, 12)
-    o._text_x = x - tw / 2
+
+    o.label = args.label or ""
+    o.x = args.x or 0
+    o.y = args.y or 0
+    o.radius = args.radius or 20
+    o.value = args.value or 0.5
+
+    local tw = textWidth(o.label, 12)
+    o._text_x = o.x - tw / 2
     return o
 end
 
@@ -74,18 +78,20 @@ end
 local XY = {}
 XY.__index = XY
 
-function XY:new(label, x, y, size, initX, initY)
+function XY:new(args)
     local o = {}
     setmetatable(o, self)
     self.__index = self
-    o.label = label
-    o.x = x
-    o.y = y
-    o.size = size
-    o.valueX = initX or 0.5
-    o.valueY = initY or 0.5
-    local tw = textWidth(label, 12)
-    o._text_x = x + (size - tw) / 2
+
+    o.label = args.label or ""
+    o.x = args.x or 0
+    o.y = args.y or 0
+    o.size = args.size or 100
+    o.valueX = args.valueX or args.x_value or 0.5
+    o.valueY = args.valueY or args.y_value or 0.5
+
+    local tw = textWidth(o.label, 12)
+    o._text_x = o.x + (o.size - tw) / 2
     return o
 end
 
@@ -108,18 +114,20 @@ end
 local Button = {}
 Button.__index = Button
 
-function Button:new(label, x, y, w, h, init)
+function Button:new(args)
     local o = {}
     setmetatable(o, self)
     self.__index = self
-    o.label = label
-    o.x = x
-    o.y = y
-    o.w = w
-    o.h = h
-    o.value = init or false
-    local tw = textWidth(label, 12)
-    o._text_x = x + (w - tw) / 2
+
+    o.label = args.label or ""
+    o.x = args.x or 0
+    o.y = args.y or 0
+    o.w = args.width or args.w or 50
+    o.h = args.height or args.h or 20
+    o.value = args.value or false
+
+    local tw = textWidth(o.label, 12)
+    o._text_x = o.x + (o.w - tw) / 2
     return o
 end
 
@@ -147,28 +155,38 @@ end
 local Grid = {}
 Grid.__index = Grid
 
-function Grid:new(label, x, y, cellSize, cellMargin, rows, cols)
+function Grid:new(args)
     local o = {}
     setmetatable(o, self)
     self.__index = self
-    o.label = label
-    o.x = x
-    o.y = y
-    o.rows = rows
-    o.cols = cols
+
+    o.label = args.label or ""
+    o.x = args.x or 0
+    o.y = args.y or 0
+    o.rows = args.rows or 4
+    o.cols = args.cols or 4
+    local cellSize = args.cellSize or args.cell_size or 20
+    local cellMargin = args.cellMargin or args.cell_margin or 2
     o.buttons = {}
 
-    for r = 1, rows do
+    for r = 1, o.rows do
         o.buttons[r] = {}
-        for c = 1, cols do
-            local bx = x + (c - 1) * (cellSize + cellMargin)
-            local by = y + (r - 1) * (cellSize + cellMargin)
-            o.buttons[r][c] = Button:new("", bx, by, cellSize, cellSize, false)
+        for c = 1, o.cols do
+            local bx = o.x + (c - 1) * (cellSize + cellMargin)
+            local by = o.y + (r - 1) * (cellSize + cellMargin)
+            o.buttons[r][c] = Button:new{
+                label = "",
+                x = bx,
+                y = by,
+                width = cellSize,
+                height = cellSize,
+                value = false
+            }
         end
     end
 
-    local tw = textWidth(label, 12)
-    o._text_x = x + (cols * cellSize - tw) / 2
+    local tw = textWidth(o.label, 12)
+    o._text_x = o.x + (o.cols * cellSize - tw) / 2
     return o
 end
 
@@ -209,22 +227,25 @@ end
 local Waveform = {}
 Waveform.__index = Waveform
 
-function Waveform:new(label, x, y, w, h, values)
+function Waveform:new(args)
     local o = {}
     setmetatable(o, self)
     self.__index = self
-    o.label = label
-    o.x = x
-    o.y = y
-    o.w = w
-    o.h = h
-    o.values = values or {}
-    if #o.values > w / 8 then
+
+    o.label = args.label or ""
+    o.x = args.x or 0
+    o.y = args.y or 0
+    o.w = args.width or args.w or 200
+    o.h = args.height or args.h or 100
+    o.values = args.values or {}
+
+    if #o.values > o.w / 8 then
         error("Too many values for waveform width. Only width/8 values allowed.")
     end
+
     o.line_thickness = 1
-    local tw = textWidth(label, 12)
-    o._text_x = x + (w - tw) / 2
+    local tw = textWidth(o.label, 12)
+    o._text_x = o.x + (o.w - tw) / 2
     return o
 end
 
