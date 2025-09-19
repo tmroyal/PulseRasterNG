@@ -188,10 +188,87 @@ function Grid:draw()
     end
 end
 
+local WaveformLine = {}
+WaveformLine.__index = WaveformLine
+
+function WaveformLine:new(x1, y1, x2, y2)
+    local o = {}
+    setmetatable(o, self)
+    self.__index = self
+    o.x1 = x1
+    o.y1 = y1
+    o.x2 = x2
+    o.y2 = y2
+    return o
+end
+
+function WaveformLine:draw()
+    line(self.x1, self.y1, self.x2, self.y2)
+end
+
+local Waveform = {}
+Waveform.__index = Waveform
+
+function Waveform:new(label, x, y, w, h, values)
+    local o = {}
+    setmetatable(o, self)
+    self.__index = self
+    o.label = label
+    o.x = x
+    o.y = y
+    o.w = w
+    o.h = h
+    o.values = values or {}
+    if #o.values > w / 8 then
+        error("Too many values for waveform width. Only width/8 values allowed.")
+    end
+    o.line_thickness = 1
+    local tw = textWidth(label, 12)
+    o._text_x = x + (w - tw) / 2
+    return o
+end
+
+function Waveform:constructLines()
+    self.line_thickness = math.max(1, math.floor(self.w / #self.values - 1)) * 1.1
+    local lines = {}
+    local center = self.y + self.h / 2
+    local bin_size = self.w / (#self.values - 1)
+    for i = 1, #self.values - 1 do
+        local disp = self.values[i] * (self.h / 2)
+        local x = self.x + (i - 1) * bin_size + bin_size / 2
+        local y1 = center - disp
+        local y2 = center + disp
+        table.insert(lines, WaveformLine:new(x, y1, x, y2))
+    end
+    return lines
+end
+
+function Waveform:setValues(vals)
+    self.values = vals or {}
+    if #self.values > self.w / 8 then
+        error("Too many values for waveform width. Only width/8 values allowed.")
+    end
+end
+
+function Waveform:draw()
+    thickness(1)
+    text(self.label, self._text_x, self.y - 15, 12)
+    box(self.x, self.y, self.w, self.h)
+    if #self.values < 2 then
+        return
+    end
+    local lines = self:constructLines()
+    thickness(self.line_thickness)
+    for _, lineObj in ipairs(lines) do
+        lineObj:draw()
+    end
+end
+
 return {
     Slider = Slider,
     Knob = Knob,
     XY = XY,
     Button = Button,
     Grid = Grid,
+    Waveform = Waveform,
 }

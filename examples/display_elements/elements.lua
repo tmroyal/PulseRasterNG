@@ -1,4 +1,4 @@
-local slider_v, slider_h, knob, xy, grid
+local slider_v, slider_h, knob, xy, grid, wf
 local v_rate = 0.5
 local h_rate = 0.3
 local k_rate = 0.2
@@ -22,6 +22,7 @@ function init()
     knob = Knob:new("Knob", 300, 150, 40, 0.5)
     xy = XY:new("XY", 400, 50, 150, 0, 0)
     grid = Grid:new("Grid", 600, 50, 60, 5, 4, 4)
+    wf = Waveform:new("Waveform", 50, 400, 300, 150, {0.3, 0.5, 0.7, 0.9, 0.7, 0.5, 0.3, 0.1, 0.9, 0.5, 0.2})
     background(0.5, 0.5, 0.5, 1)
     fill(1, 1, 1, 1)
 end
@@ -41,6 +42,7 @@ function draw()
     knob:draw()
     xy:draw()
     grid:draw()
+    wf:draw()
 
     local t = timeSec()
     if t >= next_time then
