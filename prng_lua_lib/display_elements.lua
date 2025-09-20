@@ -256,6 +256,9 @@ function Waveform:constructLines()
     local bin_size = self.w / (#self.values - 1)
     for i = 1, #self.values - 1 do
         local disp = self.values[i] * (self.h / 2)
+        if disp < 1 then
+            disp = 1
+        end
         local x = self.x + (i - 1) * bin_size + bin_size / 2
         local y1 = center - disp
         local y2 = center + disp

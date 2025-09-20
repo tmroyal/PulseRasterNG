@@ -16,6 +16,14 @@ function number_to_binary(n)
     return bin
 end
 
+function make_sine(n, f)
+    local t = {}
+    for i = 0, n - 1 do
+        t[i + 1] = 0.3 * (math.sin(i / n * 2 * math.pi * f - math.pi / 2) + 1) / 2
+    end
+    return t
+end
+
 function init()
     slider_v = Slider:new{
         label = "Vslider",
@@ -59,7 +67,7 @@ function init()
         label = "Waveform",
         x = 50, y = 400,
         width = 300, height = 150,
-        values = {0.3, 0.5, 0.7, 0.9, 0.7, 0.5, 0.3, 0.1, 0.9, 0.5, 0.2}
+        values = make_sine(32, 4.5)
     }
 
     background(0.5, 0.5, 0.5, 1)
