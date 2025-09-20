@@ -67,7 +67,7 @@ function init()
         label = "Waveform",
         x = 50, y = 400,
         width = 300, height = 150,
-        values = make_sine(32, 4.5)
+        values = make_sine(36, 4.5)
     }
 
     background(0.5, 0.5, 0.5, 1)
@@ -93,7 +93,7 @@ function draw()
 
     local t = timeSec()
     if t >= next_time then
-        next_time = t + 0.1
+        next_time = t + 0.5
         grid_index = (grid_index + 1) % 10e16
         set_grid(grid_index)
     end

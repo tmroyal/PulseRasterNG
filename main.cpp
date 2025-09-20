@@ -9,6 +9,7 @@
 #include "controller_engine/ControllerApi.hpp"
 #include "controller_engine/MidiManager.hpp"
 #include "audio_engine/pdMidi.hpp"
+#include <iostream>
 
 int main(int argc, char* argv[]){
     std::string pd_dir;
@@ -85,8 +86,10 @@ int main(int argc, char* argv[]){
     int gc_i = 0;
     while (!WindowShouldClose()) {
         // sleep until the next frame
+        PollInputEvents();
         if (GetTime() >= next_time) {
             ve.draw();
+            SwapScreenBuffer();
             next_time += frame_duration;
             // manual GC every 1024 frames
             if (++gc_i > 1024){
