@@ -6,9 +6,12 @@
     "dt",
     "fill",
     "free_patch",
+    "Grid",
     "height",
     "line",
     "load_patch",
+    "mouseDown",
+    "mouseUp",
     "openPort",
     "Knob",
     "Patch",
@@ -22,6 +25,8 @@
     "textWidth",
     "thickness",
     "timeSec",
-    "width"
+    "Waveform",
+    "width",
+    "XY"
   ]
 }
