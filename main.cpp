@@ -70,14 +70,15 @@ int main(int argc, char* argv[]){
     pdMidi pd_midi;
     MidiManager midi_manager(pd_midi);
     
-    ControllerApi controller_api(midi_manager);
+    EventProcessor event_processor;
+
+    ControllerApi controller_api(midi_manager, event_processor);
     controller_api.attach(runner.lua);
 
     // WaitTime(1);
     runner.init(lua_dir);
     runner.inc();
 
-    EventProcessor event_processor;
 
     SetTargetFPS(0) ;
     double desired_fps = 60.0;
