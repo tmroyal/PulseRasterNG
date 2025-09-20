@@ -32,6 +32,10 @@ public:
         lua.set_function("mouseDown", [this](int button, sol::protected_function handler){
             eventProcessor.onMouseDown(button, handler);
         });
+        lua.set_function("mousePosition", []() -> std::pair<float, float> {
+            Vector2 pos = GetMousePosition();
+            return {pos.x, pos.y};
+        });
     }
     
 private:

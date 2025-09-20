@@ -1,6 +1,4 @@
 local slider_v, slider_h, knob, xy, grid, wf
-local v_rate = 0.5
-local h_rate = 0.3
 local k_rate = 0.2
 local xy_rates = {0.1, 0.15}
 
@@ -32,6 +30,7 @@ function init()
         vertical = true,
         value = 0.66
     }
+    slider_v:attachMouseHandlers()
 
     slider_h = Slider:new{
         label = "Hslider",
@@ -40,6 +39,7 @@ function init()
         vertical = false,
         value = 0.66
     }
+    slider_h:attachMouseHandlers()
 
     knob = Knob:new{
         label = "Knob",
@@ -98,8 +98,6 @@ function draw()
         set_grid(grid_index)
     end
 
-    slider_v:setValue((slider_v.value + v_rate * dt()) % 1)
-    slider_h:setValue((slider_h.value + h_rate * dt()) % 1)
     knob:setValue((knob.value + k_rate * dt()) % 1)
     xy:setValues((xy.valueX + xy_rates[1] * dt()) % 1, (xy.valueY + xy_rates[2] * dt()) % 1)
 end

@@ -11,6 +11,7 @@
     "line",
     "load_patch",
     "mouseDown",
+    "mousePosition",
     "mouseUp",
     "openPort",
     "Knob",

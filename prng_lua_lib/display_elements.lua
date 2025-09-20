@@ -4,6 +4,11 @@ local Slider = {}
 -- patch.lua
 Slider.__index = Slider
 
+function _within_bounds(object, x, y)
+    return x >= object.x and x <= (object.x + object.w) and
+           y >= object.y and y <= (object.y + object.h)
+end
+
 function Slider:new(args)
     local o = {}
     setmetatable(o, self)
@@ -16,6 +21,8 @@ function Slider:new(args)
     o.h = args.height or args.h or 20
     o.vertical = args.vertical or false
     o.value = args.value or 0.5
+
+    o.mouse_down = false
 
     local tw = textWidth(o.label, 12)
     o._text_x = o.x + (o.w - tw) / 2
@@ -39,6 +46,46 @@ function Slider:draw()
         local fillWidth = self.w * self.value
         rect(self.x, self.y, fillWidth, self.h)
     end
+
+    if self.mouse_down then
+        self:updateMousePosition()
+    end
+end
+
+function Slider:updateMousePosition(x, y)
+    local mx, my = mousePosition()
+    local lastValue = self.value
+    if self.vertical then
+        local relY = math.max(0, math.min(self.h, my - self.y))
+        self:setValue(1 - (relY / self.h))
+    else
+        local relX = math.max(0, math.min(self.w, mx - self.x))
+        self:setValue(relX / self.w) 
+    end
+
+    if lastValue ~= self.value and self.onChange then
+        self:onChange(self.value)
+    end
+end
+
+function Slider:setOnChangeHandler(handler)
+    self.onChange = handler
+end
+
+function Slider:attachMouseHandlers()
+    mouseDown(0, function(x, y) self:onMouseDown(x, y) end)
+    mouseUp(0, function(x, y) self:onMouseUp(x, y) end)
+end
+
+function Slider:onMouseDown(x, y)
+    if _within_bounds(self, x, y) then
+        self.mouse_down = true
+        self:updateMousePosition(x, y)
+    end
+end
+
+function Slider:onMouseUp(x, y)
+    self.mouse_down = false
 end
 
 local Knob = {}
