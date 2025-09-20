@@ -1,18 +1,4 @@
 local slider_v, slider_h, knob, xy, grid, wf
-local k_rate = 0.2
-local xy_rates = {0.1, 0.15}
-
-local grid_index = 0
-local next_time = 0
-
-function number_to_binary(n)
-    local bin = {}
-    for i = 15, 0, -1 do
-        bin[i + 1] = n % 2
-        n = math.floor(n / 2)
-    end
-    return bin
-end
 
 function make_sine(n, f)
     local t = {}
@@ -47,6 +33,7 @@ function init()
         radius = 40,
         value = 0.5
     }
+    knob:attachMouseHandlers()
 
     xy = XY:new{
         label = "XY",
@@ -54,6 +41,7 @@ function init()
         size = 150,
         valueX = 0, valueY = 0
     }
+    xy:attachMouseHandlers()
 
     grid = Grid:new{
         label = "Grid",
@@ -62,6 +50,7 @@ function init()
         cellMargin = 5,
         rows = 4, cols = 4
     }
+    grid:attachMouseHandlers()
 
     wf = Waveform:new{
         label = "Waveform",
@@ -74,15 +63,6 @@ function init()
     fill(1, 1, 1, 1)
 end
 
-function set_grid(ind)
-    local bin = number_to_binary(grid_index)
-    for i = 1, 16 do
-        local row = math.floor((i - 1) / 4) + 1
-        local col = ((i - 1) % 4) + 1
-        grid:setValue(row, col, bin[i])
-    end
-end
-
 function draw()
     slider_v:draw()
     slider_h:draw()
@@ -90,14 +70,4 @@ function draw()
     xy:draw()
     grid:draw()
     wf:draw()
-
-    local t = timeSec()
-    if t >= next_time then
-        next_time = t + 0.5
-        grid_index = (grid_index + 1) % 10e16
-        set_grid(grid_index)
-    end
-
-    knob:setValue((knob.value + k_rate * dt()) % 1)
-    xy:setValues((xy.valueX + xy_rates[1] * dt()) % 1, (xy.valueY + xy_rates[2] * dt()) % 1)
 end

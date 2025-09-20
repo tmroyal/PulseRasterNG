@@ -1,15 +1,8 @@
--- TODO: add mouse/touch support
+-- Base class for interactive display elements
+local DisplayElement = {}
+DisplayElement.__index = DisplayElement
 
-local Slider = {}
--- patch.lua
-Slider.__index = Slider
-
-function _within_bounds(object, x, y)
-    return x >= object.x and x <= (object.x + object.w) and
-           y >= object.y and y <= (object.y + object.h)
-end
-
-function Slider:new(args)
+function DisplayElement:new(args)
     local o = {}
     setmetatable(o, self)
     self.__index = self
@@ -17,12 +10,64 @@ function Slider:new(args)
     o.label = args.label or ""
     o.x = args.x or 0
     o.y = args.y or 0
+    o.mouse_down = false
+    o.mouse_handlers_attached = false
+
+    return o
+end
+
+function DisplayElement:withinBounds(x, y)
+    return x >= self.x and x <= (self.x + (self.w or self.size or self.radius * 2)) and
+           y >= self.y and y <= (self.y + (self.h or self.size or self.radius * 2))
+end
+
+function DisplayElement:attachMouseHandlers()
+    if not self.mouse_handlers_attached then
+        mouseDown(0, function(x, y) self:onMouseDown(x, y) end)
+        mouseUp(0, function(x, y) self:onMouseUp(x, y) end)
+        self.mouse_handlers_attached = true
+    end
+end
+
+function DisplayElement:onMouseDown(x, y)
+    if self:withinBounds(x, y) then
+        self.mouse_down = true
+        if self.onInteractionStart then
+            self:onInteractionStart(x, y)
+        end
+    end
+end
+
+function DisplayElement:onMouseUp(x, y)
+    if self.mouse_down then
+        self.mouse_down = false
+        if self.onInteractionEnd then
+            self:onInteractionEnd(x, y)
+        end
+    end
+end
+
+function DisplayElement:setOnChangeHandler(handler)
+    self.onChange = handler
+end
+
+function DisplayElement:triggerChange(value)
+    if self.onChange then
+        self:onChange(value)
+    end
+end
+
+local Slider = {}
+Slider.__index = Slider
+setmetatable(Slider, {__index = DisplayElement})
+
+function Slider:new(args)
+    local o = DisplayElement.new(self, args)
+
     o.w = args.width or args.w or 100
     o.h = args.height or args.h or 20
     o.vertical = args.vertical or false
     o.value = args.value or 0.5
-
-    o.mouse_down = false
 
     local tw = textWidth(o.label, 12)
     o._text_x = o.x + (o.w - tw) / 2
@@ -52,7 +97,7 @@ function Slider:draw()
     end
 end
 
-function Slider:updateMousePosition(x, y)
+function Slider:updateMousePosition()
     local mx, my = mousePosition()
     local lastValue = self.value
     if self.vertical then
@@ -60,47 +105,28 @@ function Slider:updateMousePosition(x, y)
         self:setValue(1 - (relY / self.h))
     else
         local relX = math.max(0, math.min(self.w, mx - self.x))
-        self:setValue(relX / self.w) 
+        self:setValue(relX / self.w)
     end
 
-    if lastValue ~= self.value and self.onChange then
-        self:onChange(self.value)
-    end
-end
-
-function Slider:setOnChangeHandler(handler)
-    self.onChange = handler
-end
-
-function Slider:attachMouseHandlers()
-    mouseDown(0, function(x, y) self:onMouseDown(x, y) end)
-    mouseUp(0, function(x, y) self:onMouseUp(x, y) end)
-end
-
-function Slider:onMouseDown(x, y)
-    if _within_bounds(self, x, y) then
-        self.mouse_down = true
-        self:updateMousePosition(x, y)
+    if lastValue ~= self.value then
+        self:triggerChange(self.value)
     end
 end
 
-function Slider:onMouseUp(x, y)
-    self.mouse_down = false
+function Slider:onInteractionStart(x, y)
+    self:updateMousePosition()
 end
 
 local Knob = {}
 Knob.__index = Knob
+setmetatable(Knob, {__index = DisplayElement})
 
 function Knob:new(args)
-    local o = {}
-    setmetatable(o, self)
-    self.__index = self
+    local o = DisplayElement.new(self, args)
 
-    o.label = args.label or ""
-    o.x = args.x or 0
-    o.y = args.y or 0
     o.radius = args.radius or 20
     o.value = args.value or 0.5
+    o.last_mouse_angle = 0
 
     local tw = textWidth(o.label, 12)
     o._text_x = o.x - tw / 2
@@ -112,27 +138,66 @@ function Knob:setValue(val)
 end
 
 function Knob:draw()
-    -- color is set externally
     thickness(1)
     text(self.label, self._text_x, self.y - self.radius - 15, 12)
     ring(self.x, self.y, self.radius)
-    local angle = self.value * math.pi * 2 - math.pi / 2
+    local angle = self.value * math.pi * 2 + math.pi / 2
     local knobX = self.x + math.cos(angle) * self.radius
     local knobY = self.y + math.sin(angle) * self.radius
     line(self.x, self.y, knobX, knobY)
+
+    local value_text = string.format("%.2f", self.value)
+    local value_tw = textWidth(value_text, 10)
+    text(value_text, self.x - value_tw / 2, self.y + self.radius + 20, 10)
+
+    if self.mouse_down then
+        self:updateMousePosition()
+    end
+end
+
+function Knob:updateMousePosition()
+    local mx, my = mousePosition()
+
+    if not self.start_mouse_x then
+        return
+    end
+
+    -- Movement-based calculation
+    local dx = mx - self.start_mouse_x
+    local dy = my - self.start_mouse_y
+    local total_movement = dx + dy
+    local normalized_movement = total_movement / (self.radius * 4)
+
+    local new_value = math.max(0, math.min(1, normalized_movement))
+
+    local lastValue = self.value
+    self:setValue(new_value)
+
+    if lastValue ~= self.value then
+        self:triggerChange(self.value)
+    end
+end
+
+function Knob:withinBounds(x, y)
+    local dx = x - self.x
+    local dy = y - self.y
+    local distance = math.sqrt(dx * dx + dy * dy)
+    return distance <= self.radius
+end
+
+function Knob:onInteractionStart(x, y)
+    local mx, my = mousePosition()
+    self.start_mouse_x = mx
+    self.start_mouse_y = my
 end
 
 local XY = {}
 XY.__index = XY
+setmetatable(XY, {__index = DisplayElement})
 
 function XY:new(args)
-    local o = {}
-    setmetatable(o, self)
-    self.__index = self
+    local o = DisplayElement.new(self, args)
 
-    o.label = args.label or ""
-    o.x = args.x or 0
-    o.y = args.y or 0
     o.size = args.size or 100
     o.valueX = args.valueX or args.x_value or 0.5
     o.valueY = args.valueY or args.y_value or 0.5
@@ -156,19 +221,38 @@ function XY:draw()
     line(self.x, fillY, self.x + self.size, fillY)
     line(fillX, self.y, fillX, self.y + self.size)
     rect(fillX - 3, fillY - 3, 6, 6)
+
+    if self.mouse_down then
+        self:updateMousePosition()
+    end
+end
+
+function XY:updateMousePosition()
+    local mx, my = mousePosition()
+    local relX = math.max(0, math.min(self.size, mx - self.x))
+    local relY = math.max(0, math.min(self.size, my - self.y))
+
+    local lastValueX = self.valueX
+    local lastValueY = self.valueY
+
+    self:setValues(relX / self.size, 1 - (relY / self.size))
+
+    if lastValueX ~= self.valueX or lastValueY ~= self.valueY then
+        self:triggerChange({x = self.valueX, y = self.valueY})
+    end
+end
+
+function XY:onInteractionStart(x, y)
+    self:updateMousePosition()
 end
 
 local Button = {}
 Button.__index = Button
+setmetatable(Button, {__index = DisplayElement})
 
 function Button:new(args)
-    local o = {}
-    setmetatable(o, self)
-    self.__index = self
+    local o = DisplayElement.new(self, args)
 
-    o.label = args.label or ""
-    o.x = args.x or 0
-    o.y = args.y or 0
     o.w = args.width or args.w or 50
     o.h = args.height or args.h or 20
     o.value = args.value or false
@@ -187,7 +271,6 @@ function Button:setValue(val)
 end
 
 function Button:draw()
-    -- color is set externally
     thickness(1)
     if #self.label > 0 then
         text(self.label, self._text_x, self.y - 15, 12)
@@ -199,22 +282,32 @@ function Button:draw()
     end
 end
 
+function Button:onInteractionStart(x, y)
+    local lastValue = self.value
+    self:setValue(not self.value)
+
+    if lastValue ~= self.value then
+        self:triggerChange(self.value)
+    end
+end
+
 local Grid = {}
 Grid.__index = Grid
+setmetatable(Grid, {__index = DisplayElement})
 
 function Grid:new(args)
-    local o = {}
-    setmetatable(o, self)
-    self.__index = self
+    local o = DisplayElement.new(self, args)
 
-    o.label = args.label or ""
-    o.x = args.x or 0
-    o.y = args.y or 0
     o.rows = args.rows or 4
     o.cols = args.cols or 4
     local cellSize = args.cellSize or args.cell_size or 20
     local cellMargin = args.cellMargin or args.cell_margin or 2
+    o.cellSize = cellSize
+    o.cellMargin = cellMargin
     o.buttons = {}
+
+    o.w = o.cols * (cellSize + cellMargin) - cellMargin
+    o.h = o.rows * (cellSize + cellMargin) - cellMargin
 
     for r = 1, o.rows do
         o.buttons[r] = {}
@@ -249,6 +342,22 @@ function Grid:draw()
     for r = 1, self.rows do
         for c = 1, self.cols do
             self.buttons[r][c]:draw()
+        end
+    end
+end
+
+function Grid:onInteractionStart(x, y)
+    for r = 1, self.rows do
+        for c = 1, self.cols do
+            local button = self.buttons[r][c]
+            if button:withinBounds(x, y) then
+                local lastValue = button.value
+                button:setValue(not button.value)
+                if lastValue ~= button.value then
+                    self:triggerChange({row = r, col = c, value = button.value})
+                end
+                return
+            end
         end
     end
 end
