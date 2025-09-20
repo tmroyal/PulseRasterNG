@@ -28,6 +28,7 @@ add_executable(
     script_runner/ScriptRunner.cpp
     timing_api/Scheduler.cpp
     controller_engine/MidiManager.cpp
+    controller_engine/EventProcessor.cpp
 )
 # Lua from system
 find_package(Lua 5.4 REQUIRED)

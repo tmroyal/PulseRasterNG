@@ -9,7 +9,7 @@
 #include "controller_engine/ControllerApi.hpp"
 #include "controller_engine/MidiManager.hpp"
 #include "audio_engine/pdMidi.hpp"
-#include <iostream>
+#include "controller_engine/EventProcessor.hpp"
 
 int main(int argc, char* argv[]){
     std::string pd_dir;
@@ -77,6 +77,8 @@ int main(int argc, char* argv[]){
     runner.init(lua_dir);
     runner.inc();
 
+    EventProcessor event_processor;
+
     SetTargetFPS(0) ;
     double desired_fps = 60.0;
     double frame_duration = 1.0 / desired_fps;
@@ -87,6 +89,7 @@ int main(int argc, char* argv[]){
     while (!WindowShouldClose()) {
         // sleep until the next frame
         PollInputEvents();
+        event_processor.process();
         if (GetTime() >= next_time) {
             ve.draw();
             SwapScreenBuffer();
