@@ -164,7 +164,7 @@ function Knob:updateMousePosition()
 
     -- Movement-based calculation
     local dx = mx - self.start_mouse_x
-    local dy = my - self.start_mouse_y
+    local dy = self.start_mouse_y - my
     local total_movement = dx + dy
     local normalized_movement = total_movement / (self.radius * 4)
 
