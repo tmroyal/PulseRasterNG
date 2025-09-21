@@ -1,5 +1,7 @@
 local slider_v, slider_h, knob, xy, grid, wf
 
+local values = {}
+
 function make_sine(n, f)
     local t = {}
     for i = 0, n - 1 do
@@ -17,6 +19,8 @@ function init()
         value = 0.66
     }
     slider_v:attachMouseHandlers()
+    values["vslider"] = 0.66
+    slider_v:setChangeHandler(function(val) values["vslider"] = val end)
 
     slider_h = Slider:new{
         label = "Hslider",
@@ -26,6 +30,8 @@ function init()
         value = 0.66
     }
     slider_h:attachMouseHandlers()
+    values["hslider"] = 0.66
+    slider_h:setChangeHandler(function(val) values["hslider"] = val end)
 
     knob = Knob:new{
         label = "Knob",
@@ -34,6 +40,8 @@ function init()
         value = 0.5
     }
     knob:attachMouseHandlers()
+    values["knob"] = 0.5
+    knob:setChangeHandler(function(val) values["knob"] = val end)
 
     xy = XY:new{
         label = "XY",
@@ -42,6 +50,9 @@ function init()
         valueX = 0, valueY = 0
     }
     xy:attachMouseHandlers()
+    values["xy_x"] = 0
+    values["xy_y"] = 0
+    xy:setChangeHandler(function(args) values["xy_x"] = args.x; values["xy_y"] = args.y end)
 
     grid = Grid:new{
         label = "Grid",
@@ -70,4 +81,11 @@ function draw()
     xy:draw()
     grid:draw()
     wf:draw()
+
+    values_string = "Values:\n"
+    for k, v in pairs(values) do
+        values_string = values_string .. string.format("%s: %.3f\n", k, v)
+    end
+    text(values_string, 50, 600, 14)
+
 end

@@ -47,13 +47,13 @@ function DisplayElement:onMouseUp(x, y)
     end
 end
 
-function DisplayElement:setOnChangeHandler(handler)
+function DisplayElement:setChangeHandler(handler)
     self.onChange = handler
 end
 
 function DisplayElement:triggerChange(value)
     if self.onChange then
-        self:onChange(value)
+        self.onChange(value)
     end
 end
 
