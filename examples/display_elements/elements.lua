@@ -1,20 +1,6 @@
 local slider_v, slider_h, knob, xy, grid, wf
-local v_rate = 0.5
-local h_rate = 0.3
-local k_rate = 0.2
-local xy_rates = {0.1, 0.15}
 
-local grid_index = 0
-local next_time = 0
-
-function number_to_binary(n)
-    local bin = {}
-    for i = 15, 0, -1 do
-        bin[i + 1] = n % 2
-        n = math.floor(n / 2)
-    end
-    return bin
-end
+local values = {}
 
 function make_sine(n, f)
     local t = {}
@@ -32,6 +18,9 @@ function init()
         vertical = true,
         value = 0.66
     }
+    slider_v:attachMouseHandlers()
+    values["vslider"] = 0.66
+    slider_v:setChangeHandler(function(val) values["vslider"] = val end)
 
     slider_h = Slider:new{
         label = "Hslider",
@@ -40,6 +29,9 @@ function init()
         vertical = false,
         value = 0.66
     }
+    slider_h:attachMouseHandlers()
+    values["hslider"] = 0.66
+    slider_h:setChangeHandler(function(val) values["hslider"] = val end)
 
     knob = Knob:new{
         label = "Knob",
@@ -47,6 +39,9 @@ function init()
         radius = 40,
         value = 0.5
     }
+    knob:attachMouseHandlers()
+    values["knob"] = 0.5
+    knob:setChangeHandler(function(val) values["knob"] = val end)
 
     xy = XY:new{
         label = "XY",
@@ -54,6 +49,10 @@ function init()
         size = 150,
         valueX = 0, valueY = 0
     }
+    xy:attachMouseHandlers()
+    values["xy_x"] = 0
+    values["xy_y"] = 0
+    xy:setChangeHandler(function(args) values["xy_x"] = args.x; values["xy_y"] = args.y end)
 
     grid = Grid:new{
         label = "Grid",
@@ -62,25 +61,17 @@ function init()
         cellMargin = 5,
         rows = 4, cols = 4
     }
+    grid:attachMouseHandlers()
 
     wf = Waveform:new{
         label = "Waveform",
         x = 50, y = 400,
         width = 300, height = 150,
-        values = make_sine(32, 4.5)
+        values = make_sine(36, 4.5)
     }
 
     background(0.5, 0.5, 0.5, 1)
     fill(1, 1, 1, 1)
-end
-
-function set_grid(ind)
-    local bin = number_to_binary(grid_index)
-    for i = 1, 16 do
-        local row = math.floor((i - 1) / 4) + 1
-        local col = ((i - 1) % 4) + 1
-        grid:setValue(row, col, bin[i])
-    end
 end
 
 function draw()
@@ -91,15 +82,10 @@ function draw()
     grid:draw()
     wf:draw()
 
-    local t = timeSec()
-    if t >= next_time then
-        next_time = t + 0.1
-        grid_index = (grid_index + 1) % 10e16
-        set_grid(grid_index)
+    values_string = "Values:\n"
+    for k, v in pairs(values) do
+        values_string = values_string .. string.format("%s: %.3f\n", k, v)
     end
+    text(values_string, 50, 600, 14)
 
-    slider_v:setValue((slider_v.value + v_rate * dt()) % 1)
-    slider_h:setValue((slider_h.value + h_rate * dt()) % 1)
-    knob:setValue((knob.value + k_rate * dt()) % 1)
-    xy:setValues((xy.valueX + xy_rates[1] * dt()) % 1, (xy.valueY + xy_rates[2] * dt()) % 1)
 end

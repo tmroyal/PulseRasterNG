@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(raylib 4.5 REQUIRED) # from brew
+# Configure raylib with custom frame control
+add_subdirectory(raylib)
+target_compile_definitions(raylib PRIVATE SUPPORT_CUSTOM_FRAME_CONTROL=1)
 find_package(PkgConfig REQUIRED)
 
 add_subdirectory(sol2)        # provides target: sol2::sol2
@@ -26,6 +28,7 @@ add_executable(
     script_runner/ScriptRunner.cpp
     timing_api/Scheduler.cpp
     controller_engine/MidiManager.cpp
+    controller_engine/EventProcessor.cpp
 )
 # Lua from system
 find_package(Lua 5.4 REQUIRED)

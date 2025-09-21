@@ -9,6 +9,7 @@
 #include "controller_engine/ControllerApi.hpp"
 #include "controller_engine/MidiManager.hpp"
 #include "audio_engine/pdMidi.hpp"
+#include "controller_engine/EventProcessor.hpp"
 
 int main(int argc, char* argv[]){
     std::string pd_dir;
@@ -69,12 +70,15 @@ int main(int argc, char* argv[]){
     pdMidi pd_midi;
     MidiManager midi_manager(pd_midi);
     
-    ControllerApi controller_api(midi_manager);
+    EventProcessor event_processor;
+
+    ControllerApi controller_api(midi_manager, event_processor);
     controller_api.attach(runner.lua);
 
     // WaitTime(1);
     runner.init(lua_dir);
     runner.inc();
+
 
     SetTargetFPS(0) ;
     double desired_fps = 60.0;
@@ -85,8 +89,11 @@ int main(int argc, char* argv[]){
     int gc_i = 0;
     while (!WindowShouldClose()) {
         // sleep until the next frame
+        PollInputEvents();
+        event_processor.process();
         if (GetTime() >= next_time) {
             ve.draw();
+            SwapScreenBuffer();
             next_time += frame_duration;
             // manual GC every 1024 frames
             if (++gc_i > 1024){
