@@ -1,4 +1,5 @@
 #include "EventProcessor.hpp"
+#include <iostream>
 
 void EventProcessor::process() {
   // These will need to ve updated if raylib adds more mouse buttons
