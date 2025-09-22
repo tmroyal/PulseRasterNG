@@ -22,40 +22,47 @@ bool MidiManager::openInputPort(int number, const std::string& name){
         std::cout << "Port " << name << " already open" << std::endl;
         return true; // Already open
     }
-    
+
     // Check for port number collision
     for (const auto& pair : openPorts) {
         if (pair.second.portNumber == number) {
-            std::cerr << "Port number " << number << " is already assigned to MIDI port '" 
+            std::cerr << "Port number " << number << " is already assigned to MIDI port '"
                       << pair.first << "'. Please use a different port number." << std::endl;
             return false;
         }
     }
-    
+
     try {
         auto my_callback = [this, number](const libremidi::message& message) {
             pdm.sendMidi(number, message);
         };
-        
-        auto midi = std::make_unique<libremidi::midi_in>(
-            libremidi::input_configuration{ .on_message = my_callback }
-        );
-        
+
+        // Create MIDI input with proper error handling
+        std::unique_ptr<libremidi::midi_in> midi;
+        try {
+            midi = std::make_unique<libremidi::midi_in>(
+                libremidi::input_configuration{ .on_message = my_callback }
+            );
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to create MIDI input: " << e.what() << std::endl;
+            return false;
+        }
+
         auto port = getPortByName(name);
         auto error = midi->open_port(port);
-        
+
         // Check if opening failed
         if (error != stdx::error{}) {
             std::cerr << "Failed to open port '" << name << "'" << std::endl;
             return false;
         }
-        
+
         // Double-check that port is actually open
         if (!midi->is_port_open()) {
             std::cerr << "Port '" << name << "' reported as closed after opening" << std::endl;
             return false;
         }
-        
+
         openPorts[name] = {std::move(midi), number};
         cout << "Successfully opened port: " << name << std::endl;
         return true;
@@ -80,14 +87,12 @@ void MidiManager::closeAllPorts(){
     openPorts.clear();
 }
 
-libremidi::input_port& MidiManager::getPortByName(const std::string& name){
-    libremidi::observer obs;
-    
-    for (const libremidi::input_port& port : obs.get_input_ports()) {
+libremidi::input_port MidiManager::getPortByName(const std::string& name){
+    for (const libremidi::input_port& port : observer.get_input_ports()) {
         if (port.port_name == name) {
-            return const_cast<libremidi::input_port&>(port);
+            return port;
         }
     }
-    
+
     throw std::runtime_error("MIDI input port '" + name + "' not found");
 }

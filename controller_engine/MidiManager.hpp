@@ -9,12 +9,12 @@
 class MidiManager {
 public:
     static void listPorts();
-    
-    MidiManager(pdMidi& pdm): pdm(pdm) {}
+
+    MidiManager(pdMidi& pdm): pdm(pdm), observer() {}
     ~MidiManager(){
         closeAllPorts();
     }
-    
+
     bool openInputPort(int number, const std::string& portName);
     void closeInputPort(const std::string& portName);
     void closeAllPorts();
@@ -23,8 +23,9 @@ private:
         std::unique_ptr<libremidi::midi_in> midiInput;
         int portNumber;
     };
-    
-    libremidi::input_port& getPortByName(const std::string& port);
+
+    libremidi::input_port getPortByName(const std::string& port);
     pdMidi& pdm;
+    libremidi::observer observer;
     std::unordered_map<std::string, MidiPortInfo> openPorts;
 };

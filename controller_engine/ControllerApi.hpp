@@ -2,6 +2,7 @@
 
 #include <raylib.h>
 #include <sol/sol.hpp>
+#include <iostream>
 #include "MidiManager.hpp"
 #include "EventProcessor.hpp"
 
