@@ -14,6 +14,11 @@ ScriptRunner::ScriptRunner(){
         lua[pair.first.as<std::string>()] = pair.second;
     }
 
+    sol::table music_lib = lua.require_file("music_lib", "prng_lua_lib/music_lib.lua");
+    for (auto& pair : display_elements) {
+        lua[pair.first.as<std::string>()] = pair.second;
+    }
+
     garbage_collector = lua["collectgarbage"];
 }
 
