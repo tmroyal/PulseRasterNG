@@ -1,4 +1,4 @@
-#N canvas 146 507 454 458 12;
+#N canvas 146 507 670 500 12;
 #X obj 28 26 r \$0-rec;
 #X obj 29 65 route trigger message destination;
 #X msg 39 280 play 550 0.1;
@@ -19,7 +19,7 @@
 #X obj 24 121 unpack 0 0;
 #X msg 150 310 symbol \$1-rec;
 #X obj 28 356 s;
-#N canvas 997 714 552 548 ticker 0;
+#N canvas 997 714 552 548 ticker 1;
 #X obj 21 32 inlet count;
 #X obj 151 30 inlet interval;
 #X obj 121 231 f;
@@ -33,9 +33,11 @@
 #X obj 158 232 - 1;
 #X obj 31 63 t b f;
 #X text 200 231 -1 because we have the first bang this part will bang immediately upon recieving a bang for n-1 times;
+#X obj 245 483 outlet num;
 #X connect 0 0 11 0;
 #X connect 1 0 8 1;
 #X connect 2 0 3 0;
+#X connect 2 0 13 0;
 #X connect 3 0 9 0;
 #X connect 4 0 8 0;
 #X connect 4 1 2 1;
@@ -50,6 +52,7 @@
 #X connect 11 1 10 0;
 #X restore 20 172 pd ticker;
 #X obj 312 297 s \$0-tick;
+#X obj 456 291 s \$0-num;
 #X connect 0 0 1 0;
 #X connect 1 0 4 0;
 #X connect 1 1 3 0;
@@ -61,3 +64,4 @@
 #X connect 5 0 6 1;
 #X connect 7 0 2 0;
 #X connect 7 0 8 0;
+#X connect 7 0 9 0;
