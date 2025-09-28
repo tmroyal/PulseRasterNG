@@ -1,0 +1,13 @@
+#N canvas 836 298 439 422 12;
+#X obj 32 148 r \$0-rec;
+#X msg 88 216 resize \$1;
+#X obj 40 327 clone 1 number_message_pat;
+#X text 32 23 Input messages: destination 1 <handle> size x message 1 <message> <elements> num n nums n 1 3 5 7 max tick, f 35;
+#X obj 34 180 route num nums size message destination;
+#X connect 0 0 4 0;
+#X connect 1 0 2 0;
+#X connect 4 0 2 0;
+#X connect 4 1 1 0;
+#X connect 4 2 2 1;
+#X connect 4 3 2 2;
+#X connect 4 4 2 3;
