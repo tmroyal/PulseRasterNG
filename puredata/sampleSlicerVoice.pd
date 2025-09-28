@@ -1,5 +1,5 @@
-#N canvas 1101 523 701 615 12;
-#N canvas 297 404 744 672 points_to_line 1;
+#N canvas 558 606 701 615 12;
+#N canvas 226 404 744 672 points_to_line 1;
 #X text 463 54 perc -> perc;
 #X obj 307 42 inlet size;
 #X obj 31 145 *;
@@ -60,7 +60,7 @@
 #X obj 223 45 inlet samples;
 #X obj 336 42 inlet sr;
 #X obj 434 47 inlet dzero;
-#X msg 412 145 set \$1-sl;
+#X msg 383 152 set \$1-sl;
 #X msg 511 146 set \$1-sr;
 #X obj 246 266 tabread4~;
 #X obj 92 266 tabread4~;
