@@ -1,5 +1,6 @@
 #pragma once
 
+#include <raylib.h>
 #include <sol/sol.hpp>
 #include <chrono>
 
@@ -17,6 +18,9 @@ public:
 
         lua.set_function("dt", [this]() {
             return frame_delta;
+        });
+        lua.set_function("wait", [this](float seconds){
+            WaitTime(seconds);
         });
     }
 

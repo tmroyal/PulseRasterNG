@@ -16,3 +16,7 @@ flatpak run --command=bash   --socket=wayland --socket=fallback-x11 --device=all
 run/udev:ro   org.freedesktop.Sdk//23.08
 
 From then install cmake and g++ etc
+
+# VSCODE ignore for search
+
+libpd/**, libremidi/**, raylib/**, readerwriterqueue/**, sol2/**

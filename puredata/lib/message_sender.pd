@@ -1,4 +1,4 @@
-#N canvas 240 167 709 572 12;
+#N canvas 583 108 709 572 12;
 #X obj 348 210 inlet destination;
 #X obj 188 82 inlet message;
 #N canvas 386 528 472 457 message_setter 0;
@@ -15,13 +15,13 @@
 #X connect 5 0 2 0;
 #X connect 5 1 3 1;
 #X restore 175 157 pd message_setter;
-#X msg 167 228 play 550 0.1;
 #X obj 97 85 inlet bang;
 #X obj 182 325 s;
 #X msg 345 251 symbol \$1-rec;
-#X connect 0 0 6 0;
+#X msg 167 228 not connected;
+#X connect 0 0 5 0;
 #X connect 1 0 2 0;
-#X connect 2 0 3 0;
-#X connect 3 0 5 0;
-#X connect 4 0 3 0;
-#X connect 6 0 5 1;
+#X connect 2 0 6 0;
+#X connect 3 0 6 0;
+#X connect 5 0 4 1;
+#X connect 6 0 4 0;
